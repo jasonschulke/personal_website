@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: 'Articles',
   description:
     'Thoughts on building simple, effective, and scalable product education strategies for SaaS companies.',
+  openGraph: {
+    title: 'Articles - Jason Schulke',
+    description:
+      'Thoughts on building simple, effective, and scalable product education strategies for SaaS companies.',
+  },
 }
 
 interface FeedItem {

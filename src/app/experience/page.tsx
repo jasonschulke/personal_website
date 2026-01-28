@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   title: 'Experience',
   description:
     'My professional journey through customer education, support operations, and solutions architecture.',
+  openGraph: {
+    title: 'Experience - Jason Schulke',
+    description:
+      'My professional journey through customer education, support operations, and solutions architecture.',
+  },
 }
 
 const workHistory: WorkRole[] = [

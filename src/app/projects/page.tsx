@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: 'Projects',
   description:
     'Case studies from my consulting work at Prep Work, building operational systems and customer-facing tools for complex products.',
+  openGraph: {
+    title: 'Projects - Jason Schulke',
+    description:
+      'Case studies from my consulting work at Prep Work, building operational systems and customer-facing tools for complex products.',
+  },
 }
 
 interface Project {

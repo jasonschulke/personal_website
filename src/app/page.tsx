@@ -1,11 +1,38 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
+import Script from 'next/script'
 
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
 import austinImage from '@/images/austin.jpg'
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Jason Schulke',
+  url: 'https://jasonschulke.com',
+  jobTitle: 'Principal Solutions Architect',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Prep Work',
+    url: 'https://prepwork.co',
+  },
+  sameAs: [
+    'https://github.com/jasonschulke',
+    'https://linkedin.com/in/jasonschulke',
+    'https://producteducation.substack.com',
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Austin',
+    addressRegion: 'TX',
+    addressCountry: 'US',
+  },
+  description:
+    'Solutions Architect and Customer Education Leader designing operational and customer-facing systems for complex products.',
+}
 
 function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -192,6 +219,11 @@ function SocialLink({
 export default function Home() {
   return (
     <>
+      <Script
+        id="json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Container className="mt-16 sm:mt-32">
         <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
           <div className="lg:pl-20">
