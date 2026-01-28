@@ -96,18 +96,22 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
         )}
       </div>
       {/* Dot indicators */}
-      <div className="mt-4 flex justify-center gap-2">
+      <div className="mt-4 flex justify-center gap-1">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`h-2 w-2 rounded-full transition-colors ${
-              index === currentIndex
-                ? 'bg-indigo-500 dark:bg-indigo-400'
-                : 'bg-zinc-300 hover:bg-zinc-400 dark:bg-zinc-600 dark:hover:bg-zinc-500'
-            }`}
+            className="flex h-11 w-11 items-center justify-center"
             aria-label={`View slide ${index + 1}`}
-          />
+          >
+            <span
+              className={`block h-2.5 w-2.5 rounded-full transition-colors ${
+                index === currentIndex
+                  ? 'bg-indigo-600 dark:bg-indigo-400'
+                  : 'bg-zinc-400 hover:bg-zinc-500 dark:bg-zinc-500 dark:hover:bg-zinc-400'
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>
