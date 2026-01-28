@@ -52,7 +52,7 @@ export function Testimonial({ quote, author, authorTitle, authorUrl, authorImage
                 href={authorUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+                className="font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
               >
                 {author}
               </a>
@@ -109,7 +109,7 @@ export function RotatingTestimonials({ testimonials, interval = 8000 }: Rotating
                   href={current.authorUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+                  className="font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
                 >
                   {current.author}
                 </a>
@@ -133,7 +133,7 @@ export function RotatingTestimonials({ testimonials, interval = 8000 }: Rotating
             onClick={() => setCurrentIndex(index)}
             className={`h-2 w-2 rounded-full transition-colors ${
               index === currentIndex
-                ? 'bg-teal-500'
+                ? 'bg-slate-700 dark:bg-slate-300'
                 : 'bg-zinc-300 hover:bg-zinc-400 dark:bg-zinc-600 dark:hover:bg-zinc-500'
             }`}
             aria-label={`View testimonial ${index + 1}`}

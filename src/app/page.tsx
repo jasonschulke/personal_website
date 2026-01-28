@@ -1,12 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import clsx from 'clsx'
 import Script from 'next/script'
 
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
-import { RotatingTestimonials } from '@/components/Testimonial'
+import { HeroCarousel, type CarouselSlide } from '@/components/HeroCarousel'
 import austinImage from '@/images/austin.jpg'
 import prepWorkLogo from '@/images/prep_work_logo.png'
 import commonRoomLogo from '@/images/Common Room_logo.png'
@@ -198,30 +197,6 @@ function Resume() {
   )
 }
 
-function SocialLink({
-  className,
-  href,
-  children,
-  icon: Icon,
-}: {
-  className?: string
-  href: string
-  icon: React.ComponentType<{ className?: string }>
-  children: React.ReactNode
-}) {
-  return (
-    <li className={clsx(className, 'flex')}>
-      <Link
-        href={href}
-        className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
-      >
-        <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-teal-500" />
-        <span className="ml-4">{children}</span>
-      </Link>
-    </li>
-  )
-}
-
 export default function Home() {
   return (
     <>
@@ -233,101 +208,129 @@ export default function Home() {
       <Container className="mt-9 sm:mt-16">
         <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-12">
           {/* Left column */}
-          <div className="flex flex-col">
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-              I&apos;m Jason Schulke. I live in Austin, TX, where I design
-              systems that scale.
-            </h1>
-            <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
+          <div className="flex flex-col lg:justify-between">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+                I&apos;m Jason Schulke. I live in Austin, TX, where I design
+                systems that scale.
+              </h1>
+              <div className="mt-6 space-y-7 text-lg text-zinc-600 dark:text-zinc-400">
               <p>
-                I&apos;m a consultant designing operational and customer-facing
-                systems for complex products. I focus on reducing friction,
-                improving clarity, and enabling better decisions at scale.
+                As a consultant, my focus is helping complex products reduce
+                friction, improve clarity, and enable better decisions at scale.
+                My work spans strategy, process, software development, and content.
               </p>
               <p>
-                I love designing strategies, processes, systems, and content
-                that create real value for others, and I&apos;ve built my{' '}
+                My{' '}
                 <Link
                   href="/experience"
-                  className="font-medium text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+                  className="font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
                 >
                   career
                 </Link>{' '}
-                &mdash; from web development to non-profits to SaaS startups
-                &mdash; around pursuing that.
+                has been built around creating real value for the people I work with.
               </p>
-              <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+              <h2 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
                 I care deeply about culture and how we work together.
               </h2>
               <p>
                 Great products rise and fall on the people who build and support
                 them. <em>How</em> we work together is just as important as{' '}
-                <em>what</em> we work on.
+                <em>what</em> we work on. I bring that belief to every engagement.
               </p>
+              </div>
             </div>
-            <div className="mt-auto pt-12">
-              <RotatingTestimonials
-                testimonials={[
-                  {
-                    quote: "Despite our evolving product and often hectic schedules, Jason was flexible, proactive, and collaborative every step of the way. He delivered everything on time, within budget, and with a level of professionalism that made the entire process smooth and productive. Jason was excellent to work with in all aspects of this engagement, and I'd highly recommend him.",
-                    author: "Craig Stoss",
-                    authorTitle: "VP of Solutions @ Kodif",
-                    authorUrl: "https://www.linkedin.com/in/craigstoss/",
-                    authorImage: craigStossImage,
-                  },
-                  {
-                    quote: "Jason came highly recommended from his work at Airtable, and began to make an impact immediately. Jason is a true owner and creative. He revamped and updated our docs. He built and maintained interactive guides, somehow staying up to date despite constant UI evolutions. Everything Jason delivers is polished and thorough. He works quickly and is resourceful, two valuable characteristics at a startup.",
-                    author: "Josh Grose",
-                    authorTitle: "Head of Growth @ Common Room",
-                    authorUrl: "https://www.linkedin.com/in/joshgrose/",
-                    authorImage: joshGroseImage,
-                  },
-                ]}
-              />
+            <div className="mt-8 lg:mt-0 flex flex-wrap gap-x-6 gap-y-3">
+              <Link
+                href="https://github.com/jasonschulke"
+                className="group flex items-center gap-2 text-sm font-medium text-zinc-600 transition hover:text-indigo-500 dark:text-zinc-400 dark:hover:text-indigo-400"
+              >
+                <GitHubIcon className="h-5 w-5 flex-none fill-zinc-500 transition group-hover:fill-indigo-500" />
+                GitHub
+              </Link>
+              <Link
+                href="https://linkedin.com/in/jasonschulke"
+                className="group flex items-center gap-2 text-sm font-medium text-zinc-600 transition hover:text-indigo-500 dark:text-zinc-400 dark:hover:text-indigo-400"
+              >
+                <LinkedInIcon className="h-5 w-5 flex-none fill-zinc-500 transition group-hover:fill-indigo-500" />
+                LinkedIn
+              </Link>
+              <Link
+                href="https://producteducation.substack.com"
+                className="group flex items-center gap-2 text-sm font-medium text-zinc-600 transition hover:text-indigo-500 dark:text-zinc-400 dark:hover:text-indigo-400"
+              >
+                <SubstackIcon className="h-5 w-5 flex-none fill-zinc-500 transition group-hover:fill-indigo-500" />
+                Substack
+              </Link>
+              <Link
+                href="mailto:jasonschulke@gmail.com"
+                className="group flex items-center gap-2 text-sm font-medium text-zinc-600 transition hover:text-indigo-500 dark:text-zinc-400 dark:hover:text-indigo-400"
+              >
+                <MailIcon className="h-5 w-5 flex-none fill-zinc-500 transition group-hover:fill-indigo-500" />
+                Email
+              </Link>
             </div>
           </div>
           {/* Right column */}
           <div className="lg:pl-12 flex flex-col">
-            <div className="hidden lg:block">
-              <div className="max-w-xs px-2.5 lg:max-w-none">
-                <Image
-                  src={austinImage}
-                  alt="Austin, TX skyline"
-                  sizes="(min-width: 1024px) 32rem, 20rem"
-                  className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-                />
-              </div>
+            {/* Mobile carousel - testimonials only */}
+            <div className="lg:hidden mb-8 px-8">
+              <HeroCarousel
+                slides={[
+                  {
+                    type: 'testimonial',
+                    quote: "Despite our evolving product and often hectic schedules, Jason was flexible, proactive, and collaborative every step of the way. He delivered everything on time, within budget, and with a level of professionalism that made the entire process smooth and productive.",
+                    author: "Craig Stoss",
+                    authorTitle: "VP of Solutions @ Kodif",
+                    authorUrl: "https://www.linkedin.com/in/craigstoss/",
+                    authorImage: craigStossImage,
+                    bgClass: "bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/50 dark:to-purple-950/50",
+                  },
+                  {
+                    type: 'testimonial',
+                    quote: "Jason is a true owner and creative. Everything he delivers is polished and thorough. He works quickly and is resourceful, two valuable characteristics at a startup.",
+                    author: "Josh Grose",
+                    authorTitle: "Head of Growth @ Common Room",
+                    authorUrl: "https://www.linkedin.com/in/joshgrose/",
+                    authorImage: joshGroseImage,
+                    bgClass: "bg-gradient-to-br from-rose-50 to-orange-50 dark:from-rose-950/50 dark:to-orange-950/50",
+                  },
+                ] as CarouselSlide[]}
+                interval={7000}
+              />
             </div>
-            <ul role="list" className="mt-8 lg:mt-12">
-              <SocialLink
-                href="https://github.com/jasonschulke"
-                icon={GitHubIcon}
-              >
-                Follow on GitHub
-              </SocialLink>
-              <SocialLink
-                href="https://linkedin.com/in/jasonschulke"
-                icon={LinkedInIcon}
-                className="mt-4"
-              >
-                Connect on LinkedIn
-              </SocialLink>
-              <SocialLink
-                href="https://producteducation.substack.com"
-                icon={SubstackIcon}
-                className="mt-4"
-              >
-                Read on Substack
-              </SocialLink>
-              <SocialLink
-                href="mailto:jasonschulke@gmail.com"
-                icon={MailIcon}
-                className="mt-4"
-              >
-                Email me
-              </SocialLink>
-            </ul>
-            <div className="mt-8">
+            {/* Desktop carousel - with Austin image */}
+            <div className="hidden lg:block">
+              <HeroCarousel
+                slides={[
+                  {
+                    type: 'image',
+                    src: austinImage,
+                    alt: 'Austin, TX skyline',
+                  },
+                  {
+                    type: 'testimonial',
+                    quote: "Despite our evolving product and often hectic schedules, Jason was flexible, proactive, and collaborative every step of the way. He delivered everything on time, within budget, and with a level of professionalism that made the entire process smooth and productive.",
+                    author: "Craig Stoss",
+                    authorTitle: "VP of Solutions @ Kodif",
+                    authorUrl: "https://www.linkedin.com/in/craigstoss/",
+                    authorImage: craigStossImage,
+                    bgClass: "bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/50 dark:to-purple-950/50",
+                  },
+                  {
+                    type: 'testimonial',
+                    quote: "Jason is a true owner and creative. Everything he delivers is polished and thorough. He works quickly and is resourceful, two valuable characteristics at a startup.",
+                    author: "Josh Grose",
+                    authorTitle: "Head of Growth @ Common Room",
+                    authorUrl: "https://www.linkedin.com/in/joshgrose/",
+                    authorImage: joshGroseImage,
+                    bgClass: "bg-gradient-to-br from-rose-50 to-orange-50 dark:from-rose-950/50 dark:to-orange-950/50",
+                  },
+                ] as CarouselSlide[]}
+                interval={7000}
+              />
+            </div>
+            <div className="lg:mt-12">
               <Resume />
             </div>
           </div>

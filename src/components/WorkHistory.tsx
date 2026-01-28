@@ -79,13 +79,13 @@ function WorkHistoryItem({ role, defaultExpanded = false }: WorkHistoryItemProps
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+                  className="inline-flex items-center gap-1 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
                 >
                   {role.company}
                   <ExternalLinkIcon className="h-3 w-3 flex-shrink-0" />
                 </a>
               ) : (
-                <span className="text-sm font-medium text-teal-500 dark:text-teal-400">
+                <span className="text-sm font-medium text-indigo-500 dark:text-indigo-400">
                   {role.company}
                 </span>
               )}

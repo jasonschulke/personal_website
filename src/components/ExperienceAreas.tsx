@@ -32,7 +32,7 @@ export function ExperienceAreas({ areas }: ExperienceAreasProps) {
     <ul className="space-y-3">
       {areas.map((area, index) => (
         <li key={index} className="flex items-start gap-3">
-          <CheckIcon className="mt-0.5 h-5 w-5 flex-none text-teal-500 dark:text-teal-400" />
+          <CheckIcon className="mt-0.5 h-5 w-5 flex-none text-indigo-500 dark:text-indigo-400" />
           <span className="text-sm text-zinc-600 dark:text-zinc-400">
             {area}
           </span>
