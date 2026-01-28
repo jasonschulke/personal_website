@@ -1,7 +1,6 @@
 import { type Metadata } from 'next'
 import Link from 'next/link'
 
-import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 
 export const metadata: Metadata = {
@@ -21,6 +20,7 @@ interface FeedItem {
   description: string
   pubDate: string
   creator: string
+  image?: string
 }
 
 async function getSubstackArticles(): Promise<FeedItem[]> {
@@ -54,12 +54,20 @@ async function getSubstackArticles(): Promise<FeedItem[]> {
         const creator = itemXml.match(/<dc:creator><!\[CDATA\[([\s\S]*?)\]\]><\/dc:creator>/)?.[1] ||
           itemXml.match(/<dc:creator>([\s\S]*?)<\/dc:creator>/)?.[1] || ''
 
+        // Extract image from enclosure or media:content
+        const enclosureUrl = itemXml.match(/<enclosure[^>]*url="([^"]*)"[^>]*type="image/)?.[1] ||
+          itemXml.match(/<media:content[^>]*url="([^"]*)"[^>]*medium="image"/)?.[1] ||
+          itemXml.match(/<media:thumbnail[^>]*url="([^"]*)"/)?.[1] ||
+          // Try to extract from description HTML img tag
+          description.match(/<img[^>]*src="([^"]*)"/)?.[1] || ''
+
         items.push({
           title: title.trim(),
           link: link.trim(),
           description: cleanDescription(description.trim()),
           pubDate: pubDate.trim(),
           creator: creator.trim(),
+          image: enclosureUrl.trim() || undefined,
         })
       }
     }
@@ -100,27 +108,37 @@ function formatDate(dateString: string): string {
 
 function Article({ article }: { article: FeedItem }) {
   return (
-    <article className="md:grid md:grid-cols-4 md:items-baseline">
-      <Card className="md:col-span-3">
-        <Card.Title href={article.link}>{article.title}</Card.Title>
-        <Card.Eyebrow
-          as="time"
-          dateTime={article.pubDate}
-          className="md:hidden"
-          decorate
-        >
-          {formatDate(article.pubDate)}
-        </Card.Eyebrow>
-        <Card.Description>{article.description}</Card.Description>
-        <Card.Cta>Read article</Card.Cta>
-      </Card>
-      <Card.Eyebrow
-        as="time"
+    <article className="group relative flex flex-col rounded-2xl border border-zinc-200 p-6 transition hover:border-zinc-300 dark:border-zinc-600 dark:hover:border-zinc-500">
+      <time
         dateTime={article.pubDate}
-        className="mt-1 hidden md:block"
+        className="mb-3 text-sm text-zinc-500 dark:text-zinc-400"
       >
         {formatDate(article.pubDate)}
-      </Card.Eyebrow>
+      </time>
+      {article.image && (
+        <div className="relative mb-4 aspect-[2/1] w-full overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
+          <img
+            src={article.image}
+            alt=""
+            className="h-full w-full object-cover transition group-hover:scale-105"
+          />
+        </div>
+      )}
+      <h2 className="text-base font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
+        <Link href={article.link} target="_blank" rel="noopener noreferrer">
+          <span className="absolute inset-0 z-10" />
+          {article.title}
+        </Link>
+      </h2>
+      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        {article.description}
+      </p>
+      <div className="mt-4 flex items-center text-sm font-medium text-teal-500">
+        Read article
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="ml-1 h-4 w-4 stroke-current">
+          <path d="M6.75 5.75 9.25 8l-2.5 2.25" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
     </article>
   )
 }
@@ -133,25 +151,23 @@ export default async function Articles() {
       title="Writing on product education, support operations, and building systems that scale."
       intro="My thoughts on building simple, effective, and scalable product education strategies for SaaS companies. All articles are published on my Substack newsletter, Product Education."
     >
-      <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
-        <div className="flex max-w-3xl flex-col space-y-16">
-          {articles.length > 0 ? (
-            articles.map((article) => (
-              <Article key={article.link} article={article} />
-            ))
-          ) : (
-            <p className="text-zinc-600 dark:text-zinc-400">
-              Unable to load articles. Visit{' '}
-              <Link
-                href="https://producteducation.substack.com"
-                className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
-              >
-                Product Education on Substack
-              </Link>{' '}
-              directly.
-            </p>
-          )}
-        </div>
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {articles.length > 0 ? (
+          articles.map((article) => (
+            <Article key={article.link} article={article} />
+          ))
+        ) : (
+          <p className="col-span-full text-zinc-600 dark:text-zinc-400">
+            Unable to load articles. Visit{' '}
+            <Link
+              href="https://producteducation.substack.com"
+              className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
+            >
+              Product Education on Substack
+            </Link>{' '}
+            directly.
+          </p>
+        )}
       </div>
       <div className="mt-16 flex justify-center">
         <Link

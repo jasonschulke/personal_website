@@ -3,7 +3,11 @@ import { type Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { Section } from '@/components/Section'
 import { WorkHistory, type WorkRole } from '@/components/WorkHistory'
-import { Toolkit, type ToolCategory } from '@/components/Toolkit'
+import prepWorkLogo from '@/images/prep_work_logo.png'
+import commonRoomLogo from '@/images/Common Room_logo.png'
+import airtableLogo from '@/images/airtable_logo.png'
+import austinStoneLogo from '@/images/ascc.png'
+import habitatLogo from '@/images/habitat.png'
 
 export const metadata: Metadata = {
   title: 'Experience',
@@ -23,6 +27,7 @@ const workHistory: WorkRole[] = [
     companyUrl: 'https://prepwork.co',
     location: 'Austin, TX',
     period: '2024 - Present',
+    logo: prepWorkLogo,
     highlights: [
       'Designed and shipped a full customer education ecosystem (LMS, documentation, certification) for a complex SaaS product, enabling self-service that reduced support volume and increased customer retention.',
       'Developed a custom web app for a modular flooring manufacturer, integrating design, quoting, and production data to automate workflows, reduce manual input, and improve order accuracy.',
@@ -36,7 +41,8 @@ const workHistory: WorkRole[] = [
     company: 'Common Room',
     companyUrl: 'https://commonroom.io',
     location: 'Seattle, WA',
-    period: '2023',
+    period: '2023 - 2024',
+    logo: commonRoomLogo,
     highlights: [
       'Created a scalable education and enablement strategy aligned with a company-wide shift toward self-service, cutting onboarding time by 50% and technical integration time by 60%.',
       'Worked directly with customers and support teams to investigate complex integration and feature-related issues, translating those findings into documentation, tooling, and internal process changes.',
@@ -49,6 +55,7 @@ const workHistory: WorkRole[] = [
     companyUrl: 'https://airtable.com',
     location: 'San Francisco, CA',
     period: '2018 - 2023',
+    logo: airtableLogo,
     highlights: [
       "Built and scaled Airtable's Support organization and operational backbone from launch through global scale, spanning internal teams and external partners.",
       "Designed and owned Airtable's first self-service, knowledge, and Content Operations systems, achieving a 35:1 self-service rate, 52% instant resolution, and a 30% reduction in ticket volume.",
@@ -57,125 +64,23 @@ const workHistory: WorkRole[] = [
       'Built support analytics and reporting used in executive reviews and cross-functional planning to inform prioritization, staffing, and product decisions, and implemented Knowledge-Centered Service (KCS) to increase content accuracy, velocity, and trust.',
     ],
   },
-]
-
-const toolkit: ToolCategory[] = [
   {
-    category: 'LMS',
-    tools: ['Lessonly', 'Workramp'],
+    title: 'Operations Program Manager',
+    company: 'The Austin Stone',
+    location: 'Austin, TX',
+    period: '2013 - 2018',
+    logo: austinStoneLogo,
+    highlights: [],
   },
   {
-    category: 'CMS',
-    tools: [
-      'Webflow',
-      'Contentful',
-      'Sanity Studio',
-      'Document360',
-      'Zendesk Guide',
-      'Help Scout',
-      'Guru',
-      'Confluence',
-      'WordPress',
-    ],
-  },
-  {
-    category: 'CRM',
-    tools: ['HubSpot', 'Salesforce'],
-  },
-  {
-    category: 'Project Management',
-    tools: ['Airtable', 'Notion'],
-  },
-  {
-    category: 'Customer Support',
-    tools: [
-      'Zendesk',
-      'Intercom',
-      'Zoom Virtual Agent (formerly Solvvy)',
-      'Salesforce Service Cloud',
-    ],
-  },
-  {
-    category: 'Automation and integrations',
-    tools: ['Zapier', 'Make', 'Webhooks'],
-  },
-  {
-    category: 'Collaborative Design',
-    tools: ['Figma', 'Miro', 'Sketch'],
-  },
-  {
-    category: 'Interactive Media Creation',
-    tools: ['Arcade', 'Descript', 'Wistia', 'Tango', 'Livestorm'],
-  },
-  {
-    category: 'Forms',
-    tools: ['Fillout', 'Typeform'],
-  },
-  {
-    category: 'Analytics',
-    tools: ['Google Analytics', 'Full Story', 'Equals'],
+    title: 'Director of Operations',
+    company: 'Habitat for Humanity Bryan College Station',
+    location: 'Bryan, TX',
+    period: '2011 - 2013',
+    logo: habitatLogo,
+    highlights: [],
   },
 ]
-
-interface EngagementItem {
-  title: string
-  url?: string
-}
-
-const engagements: EngagementItem[] = [
-  {
-    title: 'Certified Airtable Builder',
-    url: 'https://www.airtable.com/lp/builder-certification',
-  },
-  { title: 'Moderator and Community Member, Support Driven' },
-  { title: 'Guest Speaker, Support Driven Podcast' },
-  { title: 'Author, Product Education' },
-  { title: 'Member, CX Accelerator' },
-  { title: 'Member, Customer Education Org' },
-  { title: 'Member, Write the Docs' },
-]
-
-function ExternalLinkIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
-      <path
-        d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function EngagementsList({ items }: { items: EngagementItem[] }) {
-  return (
-    <ul className="space-y-3">
-      {items.map((item, index) => (
-        <li key={index} className="flex items-center gap-2">
-          <span className="text-zinc-400 dark:text-zinc-500">&gt;</span>
-          {item.url ? (
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300"
-            >
-              {item.title}
-              <ExternalLinkIcon className="h-3 w-3" />
-            </a>
-          ) : (
-            <span className="text-sm text-zinc-600 dark:text-zinc-400">
-              {item.title}
-            </span>
-          )}
-        </li>
-      ))}
-    </ul>
-  )
-}
 
 export default function Experience() {
   return (
@@ -186,12 +91,6 @@ export default function Experience() {
       <div className="space-y-20">
         <Section title="Work history">
           <WorkHistory roles={workHistory} />
-        </Section>
-        <Section title="Toolkit">
-          <Toolkit categories={toolkit} />
-        </Section>
-        <Section title="Professional engagement">
-          <EngagementsList items={engagements} />
         </Section>
       </div>
     </SimpleLayout>

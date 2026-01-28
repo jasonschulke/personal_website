@@ -6,11 +6,13 @@ import Script from 'next/script'
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
-import { Testimonial } from '@/components/Testimonial'
+import { RotatingTestimonials } from '@/components/Testimonial'
 import austinImage from '@/images/austin.jpg'
-import prepWorkLogo from '@/images/prep_work.png'
+import prepWorkLogo from '@/images/prep_work_logo.png'
 import commonRoomLogo from '@/images/Common Room_logo.png'
-import airtableLogo from '@/images/ascc.png'
+import airtableLogo from '@/images/airtable_logo.png'
+import craigStossImage from '@/images/craig_stoss.jpg'
+import joshGroseImage from '@/images/josh_grose.jpg'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -112,26 +114,33 @@ function Role({ role }: { role: Role }) {
 
   return (
     <li className="flex gap-4">
-      <div className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:bg-zinc-800 dark:border dark:border-zinc-700/50 dark:ring-0">
-        <Image src={role.logo} alt={role.company} className="h-7 w-7" unoptimized />
+      <div className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full bg-white dark:bg-zinc-800">
+        <Image
+          src={role.logo}
+          alt={role.company}
+          className="h-7 w-7 object-contain"
+          unoptimized
+        />
       </div>
-      <dl className="flex flex-auto flex-wrap gap-x-2">
-        <dt className="sr-only">Company</dt>
-        <dd className="w-full flex-none text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          {role.company}
-        </dd>
+      <dl className="flex flex-auto flex-col">
+        <div className="flex items-center justify-between">
+          <dt className="sr-only">Company</dt>
+          <dd className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            {role.company}
+          </dd>
+          <dt className="sr-only">Date</dt>
+          <dd
+            className="text-xs text-zinc-400 dark:text-zinc-500"
+            aria-label={`${startLabel} until ${endLabel}`}
+          >
+            <time dateTime={startDate}>{startLabel}</time>{' '}
+            <span aria-hidden="true">—</span>{' '}
+            <time dateTime={endDate}>{endLabel}</time>
+          </dd>
+        </div>
         <dt className="sr-only">Role</dt>
         <dd className="text-xs text-zinc-500 dark:text-zinc-400">
           {role.title}
-        </dd>
-        <dt className="sr-only">Date</dt>
-        <dd
-          className="ml-auto text-xs text-zinc-400 dark:text-zinc-500"
-          aria-label={`${startLabel} until ${endLabel}`}
-        >
-          <time dateTime={startDate}>{startLabel}</time>{' '}
-          <span aria-hidden="true">—</span>{' '}
-          <time dateTime={endDate}>{endLabel}</time>
         </dd>
       </dl>
     </li>
@@ -155,7 +164,7 @@ function Resume() {
       title: 'Senior Manager, Customer Education',
       logo: commonRoomLogo,
       start: '2023',
-      end: '2023',
+      end: '2024',
     },
     {
       company: 'Airtable',
@@ -167,10 +176,10 @@ function Resume() {
   ]
 
   return (
-    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+    <div className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-600">
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <BriefcaseIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Work</span>
+        <span className="ml-3">Recent Work</span>
       </h2>
       <ol className="mt-6 space-y-4">
         {resume.map((role, roleIndex) => (
@@ -182,7 +191,7 @@ function Resume() {
         variant="secondary"
         className="group mt-6 w-full"
       >
-        View experience
+        View All Experience
         <ArrowDownIcon className="h-4 w-4 rotate-[-90deg] stroke-zinc-400 transition group-active:stroke-zinc-600 dark:group-hover:stroke-zinc-50 dark:group-active:stroke-zinc-50" />
       </Button>
     </div>
@@ -221,19 +230,10 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Container className="mt-16 sm:mt-32">
-        <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
-          <div className="hidden lg:block lg:pl-20">
-            <div className="max-w-xs px-2.5 lg:max-w-none">
-              <Image
-                src={austinImage}
-                alt="Austin, TX skyline"
-                sizes="(min-width: 1024px) 32rem, 20rem"
-                className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-              />
-            </div>
-          </div>
-          <div className="lg:order-first lg:row-span-2">
+      <Container className="mt-9 sm:mt-16">
+        <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-12">
+          {/* Left column */}
+          <div className="flex flex-col">
             <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
               I&apos;m Jason Schulke. I live in Austin, TX, where I design
               systems that scale.
@@ -265,20 +265,40 @@ export default function Home() {
                 <em>what</em> we work on.
               </p>
             </div>
-            <div className="mt-12 space-y-6">
-              <Testimonial
-                quote="Jason is a pleasure to work with. His expertise and guidance during the development of the Kodif University product made a tremendous impact on our platform and customer experience."
-                author="Walter Silin, Co-Founder @ Kodif"
-                authorUrl="https://www.linkedin.com/in/waltersilin/"
-              />
-              <Testimonial
-                quote="Jason brings a rare combination of strategic thinking and hands-on execution. He helped us transform how we approach customer education."
-                author="Former Colleague @ Airtable"
+            <div className="mt-auto pt-12">
+              <RotatingTestimonials
+                testimonials={[
+                  {
+                    quote: "Despite our evolving product and often hectic schedules, Jason was flexible, proactive, and collaborative every step of the way. He delivered everything on time, within budget, and with a level of professionalism that made the entire process smooth and productive. Jason was excellent to work with in all aspects of this engagement, and I'd highly recommend him.",
+                    author: "Craig Stoss",
+                    authorTitle: "VP of Solutions @ Kodif",
+                    authorUrl: "https://www.linkedin.com/in/craigstoss/",
+                    authorImage: craigStossImage,
+                  },
+                  {
+                    quote: "Jason came highly recommended from his work at Airtable, and began to make an impact immediately. Jason is a true owner and creative. He revamped and updated our docs. He built and maintained interactive guides, somehow staying up to date despite constant UI evolutions. Everything Jason delivers is polished and thorough. He works quickly and is resourceful, two valuable characteristics at a startup.",
+                    author: "Josh Grose",
+                    authorTitle: "Head of Growth @ Common Room",
+                    authorUrl: "https://www.linkedin.com/in/joshgrose/",
+                    authorImage: joshGroseImage,
+                  },
+                ]}
               />
             </div>
           </div>
-          <div className="lg:pl-20">
-            <ul role="list">
+          {/* Right column */}
+          <div className="lg:pl-12 flex flex-col">
+            <div className="hidden lg:block">
+              <div className="max-w-xs px-2.5 lg:max-w-none">
+                <Image
+                  src={austinImage}
+                  alt="Austin, TX skyline"
+                  sizes="(min-width: 1024px) 32rem, 20rem"
+                  className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
+                />
+              </div>
+            </div>
+            <ul role="list" className="mt-8 lg:mt-12">
               <SocialLink
                 href="https://github.com/jasonschulke"
                 icon={GitHubIcon}
@@ -290,7 +310,7 @@ export default function Home() {
                 icon={LinkedInIcon}
                 className="mt-4"
               >
-                Follow on LinkedIn
+                Connect on LinkedIn
               </SocialLink>
               <SocialLink
                 href="https://producteducation.substack.com"
@@ -304,7 +324,7 @@ export default function Home() {
                 icon={MailIcon}
                 className="mt-4"
               >
-                jasonschulke@gmail.com
+                Email me
               </SocialLink>
             </ul>
             <div className="mt-8">
