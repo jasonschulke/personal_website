@@ -6,7 +6,11 @@ import Script from 'next/script'
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { GitHubIcon, LinkedInIcon } from '@/components/SocialIcons'
+import { Testimonial } from '@/components/Testimonial'
 import austinImage from '@/images/austin.jpg'
+import prepWorkLogo from '@/images/prep_work.png'
+import commonRoomLogo from '@/images/Common Room_logo.png'
+import airtableLogo from '@/images/ascc.png'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -92,8 +96,7 @@ function ArrowDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 interface Role {
   company: string
   title: string
-  color: string
-  initial: string
+  logo: typeof prepWorkLogo
   start: string | { label: string; dateTime: string }
   end: string | { label: string; dateTime: string }
 }
@@ -109,11 +112,8 @@ function Role({ role }: { role: Role }) {
 
   return (
     <li className="flex gap-4">
-      <div
-        className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:ring-0"
-        style={{ backgroundColor: role.color }}
-      >
-        <span className="text-sm font-bold text-white">{role.initial}</span>
+      <div className="relative mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full bg-white shadow-md ring-1 shadow-zinc-800/5 ring-zinc-900/5 dark:bg-zinc-800 dark:border dark:border-zinc-700/50 dark:ring-0">
+        <Image src={role.logo} alt={role.company} className="h-7 w-7" unoptimized />
       </div>
       <dl className="flex flex-auto flex-wrap gap-x-2">
         <dt className="sr-only">Company</dt>
@@ -143,8 +143,7 @@ function Resume() {
     {
       company: 'Prep Work',
       title: 'Principal Solutions Architect',
-      color: '#10b981',
-      initial: 'P',
+      logo: prepWorkLogo,
       start: '2024',
       end: {
         label: 'Present',
@@ -154,16 +153,14 @@ function Resume() {
     {
       company: 'Common Room',
       title: 'Senior Manager, Customer Education',
-      color: '#6366f1',
-      initial: 'C',
+      logo: commonRoomLogo,
       start: '2023',
       end: '2023',
     },
     {
       company: 'Airtable',
       title: 'Manager, Support Operations',
-      color: '#f59e0b',
-      initial: 'A',
+      logo: airtableLogo,
       start: '2018',
       end: '2023',
     },
@@ -226,7 +223,7 @@ export default function Home() {
       />
       <Container className="mt-16 sm:mt-32">
         <div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
-          <div className="lg:pl-20">
+          <div className="hidden lg:block lg:pl-20">
             <div className="max-w-xs px-2.5 lg:max-w-none">
               <Image
                 src={austinImage}
@@ -265,9 +262,19 @@ export default function Home() {
               <p>
                 Great products rise and fall on the people who build and support
                 them. <em>How</em> we work together is just as important as{' '}
-                <em>what</em> we work on. I thrive in cultures that are
-                collaborative, honest, and built on trust.
+                <em>what</em> we work on.
               </p>
+            </div>
+            <div className="mt-12 space-y-6">
+              <Testimonial
+                quote="Jason is a pleasure to work with. His expertise and guidance during the development of the Kodif University product made a tremendous impact on our platform and customer experience."
+                author="Walter Silin, Co-Founder @ Kodif"
+                authorUrl="https://www.linkedin.com/in/waltersilin/"
+              />
+              <Testimonial
+                quote="Jason brings a rare combination of strategic thinking and hands-on execution. He helped us transform how we approach customer education."
+                author="Former Colleague @ Airtable"
+              />
             </div>
           </div>
           <div className="lg:pl-20">
@@ -295,7 +302,7 @@ export default function Home() {
               <SocialLink
                 href="mailto:jasonschulke@gmail.com"
                 icon={MailIcon}
-                className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
+                className="mt-4"
               >
                 jasonschulke@gmail.com
               </SocialLink>
