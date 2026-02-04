@@ -49,56 +49,72 @@ interface WorkHistoryItemProps {
   defaultExpanded?: boolean
 }
 
+function RoleHeader({ role }: { role: WorkRole }) {
+  return (
+    <div className="flex items-start gap-4 flex-1">
+      {role.logo && (
+        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-white dark:bg-zinc-800">
+          <Image
+            src={role.logo}
+            alt={role.company}
+            className="h-7 w-7 object-contain"
+            unoptimized
+          />
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          {role.title}
+        </h3>
+        <div className="flex items-center gap-1 mt-0.5">
+          {role.companyUrl ? (
+            <a
+              href={role.companyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
+            >
+              {role.company}
+              <ExternalLinkIcon className="h-3 w-3 flex-shrink-0" />
+            </a>
+          ) : (
+            <span className="text-sm font-medium text-indigo-500 dark:text-indigo-400">
+              {role.company}
+            </span>
+          )}
+          <span className="text-sm text-zinc-400 dark:text-zinc-500 flex-shrink-0">&middot;</span>
+          <span className="text-sm text-zinc-500 dark:text-zinc-400 flex-shrink-0">
+            {role.period}
+          </span>
+        </div>
+        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          {role.location}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function WorkHistoryItem({ role, defaultExpanded = false }: WorkHistoryItemProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+  const hasHighlights = role.highlights.length > 0
+
+  if (!hasHighlights) {
+    return (
+      <div className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-600">
+        <RoleHeader role={role} />
+      </div>
+    )
+  }
+
   return (
     <div className="rounded-2xl border border-zinc-200 dark:border-zinc-600">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex w-full items-center justify-between p-6 text-left"
       >
-        <div className="flex items-start gap-4 flex-1">
-          {role.logo && (
-            <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-white dark:bg-zinc-800">
-              <Image
-                src={role.logo}
-                alt={role.company}
-                className="h-7 w-7 object-contain"
-                unoptimized
-              />
-            </div>
-          )}
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              {role.title}
-            </h3>
-            <div className="flex items-center gap-1 mt-0.5">
-              {role.companyUrl ? (
-                <a
-                  href={role.companyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
-                >
-                  {role.company}
-                  <ExternalLinkIcon className="h-3 w-3 flex-shrink-0" />
-                </a>
-              ) : (
-                <span className="text-sm font-medium text-indigo-500 dark:text-indigo-400">
-                  {role.company}
-                </span>
-              )}
-              <span className="text-sm text-zinc-400 dark:text-zinc-500 flex-shrink-0">&middot;</span>
-              <span className="text-sm text-zinc-500 dark:text-zinc-400 flex-shrink-0">
-                {role.period}
-              </span>
-            </div>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-              {role.location}
-            </p>
-          </div>
-        </div>
+        <RoleHeader role={role} />
         <ChevronIcon
           className={clsx(
             'h-5 w-5 flex-none text-zinc-400 transition-transform duration-200 dark:text-zinc-500',

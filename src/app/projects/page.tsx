@@ -119,7 +119,7 @@ function FeaturedProject({ project }: { project: Project }) {
           />
         </div>
         <div className="flex flex-col justify-center">
-          <p className="text-sm font-medium text-rose-500">Featured Project</p>
+          <p className="text-sm font-medium text-indigo-500">Featured Project</p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-3xl">
             {project.title}
           </h2>
@@ -131,7 +131,7 @@ function FeaturedProject({ project }: { project: Project }) {
               href="https://prepwork.co"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-sm font-medium text-rose-500 hover:text-rose-600"
+              className="inline-flex items-center text-sm font-medium text-indigo-500 hover:text-indigo-600"
             >
               Read the full story
               <ArrowIcon className="ml-1 h-4 w-4 stroke-current" />
@@ -155,7 +155,7 @@ function ProjectCard({ project }: { project: Project }) {
           className="h-full w-full object-cover transition group-hover:scale-105"
         />
       </div>
-      <p className="mt-4 text-sm font-medium text-rose-500">{project.category}</p>
+      <p className="mt-4 text-sm font-medium text-indigo-500">{project.category}</p>
       <h3 className="mt-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
         {project.title}
       </h3>
@@ -167,7 +167,7 @@ function ProjectCard({ project }: { project: Project }) {
           href="https://prepwork.co"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center text-sm font-medium text-rose-500 hover:text-rose-600"
+          className="inline-flex items-center text-sm font-medium text-indigo-500 hover:text-indigo-600"
         >
           Read more
           <ArrowIcon className="ml-1 h-4 w-4 stroke-current" />
@@ -188,9 +188,17 @@ export default function Projects() {
           Projects & Case Studies
         </h1>
         <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-          A selection of projects from my consulting work at Prep Work, where I
-          design and build operational systems and customer-facing tools for
-          complex products.
+          A selection of projects from my consulting work at{' '}
+          <Link
+            href="https://prepwork.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
+          >
+            Prep Work
+          </Link>
+          , where I design and build operational systems and customer-facing
+          tools for complex products.
         </p>
       </header>
 

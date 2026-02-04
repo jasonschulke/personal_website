@@ -24,59 +24,73 @@ interface FeedItem {
 }
 
 async function getSubstackArticles(): Promise<FeedItem[]> {
-  try {
-    const response = await fetch('https://producteducation.substack.com/feed', {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    })
+  const feedUrl = 'https://producteducation.substack.com/feed'
+  const maxRetries = 3
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch feed')
-    }
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(feedUrl, {
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (compatible; personal-site-build/1.0)',
+        },
+      })
 
-    const xml = await response.text()
+      if (!response.ok) {
+        throw new Error(`Feed returned ${response.status}`)
+      }
 
-    // Parse the XML manually (simple approach)
-    const items: FeedItem[] = []
-    const itemMatches = xml.match(/<item>([\s\S]*?)<\/item>/g)
+      const xml = await response.text()
 
-    if (itemMatches) {
-      for (const itemXml of itemMatches) {
-        const title = itemXml.match(/<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>/)?.[1] ||
-          itemXml.match(/<title>([\s\S]*?)<\/title>/)?.[1] || ''
-
-        const link = itemXml.match(/<link>([\s\S]*?)<\/link>/)?.[1] || ''
-
-        const description = itemXml.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/)?.[1] ||
-          itemXml.match(/<description>([\s\S]*?)<\/description>/)?.[1] || ''
-
-        const pubDate = itemXml.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || ''
-
-        const creator = itemXml.match(/<dc:creator><!\[CDATA\[([\s\S]*?)\]\]><\/dc:creator>/)?.[1] ||
-          itemXml.match(/<dc:creator>([\s\S]*?)<\/dc:creator>/)?.[1] || ''
-
-        // Extract image from enclosure or media:content
-        const enclosureUrl = itemXml.match(/<enclosure[^>]*url="([^"]*)"[^>]*type="image/)?.[1] ||
-          itemXml.match(/<media:content[^>]*url="([^"]*)"[^>]*medium="image"/)?.[1] ||
-          itemXml.match(/<media:thumbnail[^>]*url="([^"]*)"/)?.[1] ||
-          // Try to extract from description HTML img tag
-          description.match(/<img[^>]*src="([^"]*)"/)?.[1] || ''
-
-        items.push({
-          title: title.trim(),
-          link: link.trim(),
-          description: cleanDescription(description.trim()),
-          pubDate: pubDate.trim(),
-          creator: creator.trim(),
-          image: enclosureUrl.trim() || undefined,
-        })
+      return parseSubstackFeed(xml)
+    } catch (error) {
+      console.error(`Attempt ${attempt}/${maxRetries} failed:`, error)
+      if (attempt < maxRetries) {
+        await new Promise((r) => setTimeout(r, 1000 * attempt))
       }
     }
-
-    return items
-  } catch (error) {
-    console.error('Error fetching Substack feed:', error)
-    return []
   }
+
+  console.error('All attempts to fetch Substack feed failed')
+  return []
+}
+
+function parseSubstackFeed(xml: string): FeedItem[] {
+  const items: FeedItem[] = []
+  const itemMatches = xml.match(/<item>([\s\S]*?)<\/item>/g)
+
+  if (itemMatches) {
+    for (const itemXml of itemMatches) {
+      const title = itemXml.match(/<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>/)?.[1] ||
+        itemXml.match(/<title>([\s\S]*?)<\/title>/)?.[1] || ''
+
+      const link = itemXml.match(/<link>([\s\S]*?)<\/link>/)?.[1] || ''
+
+      const description = itemXml.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/)?.[1] ||
+        itemXml.match(/<description>([\s\S]*?)<\/description>/)?.[1] || ''
+
+      const pubDate = itemXml.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || ''
+
+      const creator = itemXml.match(/<dc:creator><!\[CDATA\[([\s\S]*?)\]\]><\/dc:creator>/)?.[1] ||
+        itemXml.match(/<dc:creator>([\s\S]*?)<\/dc:creator>/)?.[1] || ''
+
+      const enclosureUrl = itemXml.match(/<enclosure[^>]*url="([^"]*)"[^>]*type="image/)?.[1] ||
+        itemXml.match(/<media:content[^>]*url="([^"]*)"[^>]*medium="image"/)?.[1] ||
+        itemXml.match(/<media:thumbnail[^>]*url="([^"]*)"/)?.[1] ||
+        description.match(/<img[^>]*src="([^"]*)"/)?.[1] || ''
+
+      items.push({
+        title: title.trim(),
+        link: link.trim(),
+        description: cleanDescription(description.trim()),
+        pubDate: pubDate.trim(),
+        creator: creator.trim(),
+        image: enclosureUrl.trim() || undefined,
+      })
+    }
+  }
+
+  return items
 }
 
 function cleanDescription(html: string): string {

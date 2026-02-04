@@ -58,16 +58,16 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
             <div className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-200/30 blur-3xl" />
 
             {/* Content */}
-            <blockquote className="relative z-10 p-8">
-              <p className="text-base font-medium leading-relaxed text-zinc-700 italic dark:text-zinc-200">
+            <blockquote className="relative z-10 p-5 sm:p-8">
+              <p className="text-sm font-medium leading-relaxed text-zinc-700 italic sm:text-base dark:text-zinc-200">
                 &ldquo;{current.quote}&rdquo;
               </p>
-              <footer className="mt-6 flex items-center gap-3">
+              <footer className="mt-4 flex items-center gap-3 sm:mt-6">
                 {current.authorImage && (
                   <Image
                     src={current.authorImage}
                     alt={current.author}
-                    className="h-12 w-12 rounded-full border-2 border-white/50 object-cover shadow-lg"
+                    className="h-10 w-10 rounded-full border-2 border-white/50 object-cover shadow-lg sm:h-12 sm:w-12"
                     unoptimized
                   />
                 )}
@@ -77,17 +77,17 @@ export function HeroCarousel({ slides, interval = 6000 }: HeroCarouselProps) {
                       href={current.authorUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-zinc-900 hover:text-indigo-600 dark:text-zinc-100 dark:hover:text-indigo-400"
+                      className="text-sm font-semibold text-zinc-900 hover:text-indigo-600 sm:text-base dark:text-zinc-100 dark:hover:text-indigo-400"
                     >
                       {current.author}
                     </a>
                   ) : (
-                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    <span className="text-sm font-semibold text-zinc-900 sm:text-base dark:text-zinc-100">
                       {current.author}
                     </span>
                   )}
                   {current.authorTitle && (
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">{current.authorTitle}</p>
+                    <p className="text-xs text-zinc-600 sm:text-sm dark:text-zinc-400">{current.authorTitle}</p>
                   )}
                 </div>
               </footer>
