@@ -2,6 +2,7 @@ import { type Metadata } from 'next'
 import Link from 'next/link'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
+import articles from '@/data/articles.json'
 
 export const metadata: Metadata = {
   title: 'Articles',
@@ -20,91 +21,7 @@ interface FeedItem {
   description: string
   pubDate: string
   creator: string
-  image?: string
-}
-
-async function getSubstackArticles(): Promise<FeedItem[]> {
-  const feedUrl = 'https://producteducation.substack.com/feed'
-  const maxRetries = 3
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(feedUrl, {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (compatible; personal-site-build/1.0)',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error(`Feed returned ${response.status}`)
-      }
-
-      const xml = await response.text()
-
-      return parseSubstackFeed(xml)
-    } catch (error) {
-      console.error(`Attempt ${attempt}/${maxRetries} failed:`, error)
-      if (attempt < maxRetries) {
-        await new Promise((r) => setTimeout(r, 1000 * attempt))
-      }
-    }
-  }
-
-  console.error('All attempts to fetch Substack feed failed')
-  return []
-}
-
-function parseSubstackFeed(xml: string): FeedItem[] {
-  const items: FeedItem[] = []
-  const itemMatches = xml.match(/<item>([\s\S]*?)<\/item>/g)
-
-  if (itemMatches) {
-    for (const itemXml of itemMatches) {
-      const title = itemXml.match(/<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>/)?.[1] ||
-        itemXml.match(/<title>([\s\S]*?)<\/title>/)?.[1] || ''
-
-      const link = itemXml.match(/<link>([\s\S]*?)<\/link>/)?.[1] || ''
-
-      const description = itemXml.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/)?.[1] ||
-        itemXml.match(/<description>([\s\S]*?)<\/description>/)?.[1] || ''
-
-      const pubDate = itemXml.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || ''
-
-      const creator = itemXml.match(/<dc:creator><!\[CDATA\[([\s\S]*?)\]\]><\/dc:creator>/)?.[1] ||
-        itemXml.match(/<dc:creator>([\s\S]*?)<\/dc:creator>/)?.[1] || ''
-
-      const enclosureUrl = itemXml.match(/<enclosure[^>]*url="([^"]*)"[^>]*type="image/)?.[1] ||
-        itemXml.match(/<media:content[^>]*url="([^"]*)"[^>]*medium="image"/)?.[1] ||
-        itemXml.match(/<media:thumbnail[^>]*url="([^"]*)"/)?.[1] ||
-        description.match(/<img[^>]*src="([^"]*)"/)?.[1] || ''
-
-      items.push({
-        title: title.trim(),
-        link: link.trim(),
-        description: cleanDescription(description.trim()),
-        pubDate: pubDate.trim(),
-        creator: creator.trim(),
-        image: enclosureUrl.trim() || undefined,
-      })
-    }
-  }
-
-  return items
-}
-
-function cleanDescription(html: string): string {
-  // Remove HTML tags and decode entities
-  return html
-    .replace(/<[^>]*>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .slice(0, 300)
-    .trim() + '...'
+  image?: string | null
 }
 
 function formatDate(dateString: string): string {
@@ -157,31 +74,16 @@ function Article({ article }: { article: FeedItem }) {
   )
 }
 
-export default async function Articles() {
-  const articles = await getSubstackArticles()
-
+export default function Articles() {
   return (
     <SimpleLayout
       title="Writing on product education, support operations, and building systems that scale."
       intro="My thoughts on building simple, effective, and scalable product education strategies for SaaS companies. All articles are published on my Substack newsletter, Product Education."
     >
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {articles.length > 0 ? (
-          articles.map((article) => (
-            <Article key={article.link} article={article} />
-          ))
-        ) : (
-          <p className="col-span-full text-zinc-600 dark:text-zinc-400">
-            Unable to load articles. Visit{' '}
-            <Link
-              href="https://producteducation.substack.com"
-              className="text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
-            >
-              Product Education on Substack
-            </Link>{' '}
-            directly.
-          </p>
-        )}
+        {(articles as FeedItem[]).map((article) => (
+          <Article key={article.link} article={article} />
+        ))}
       </div>
       <div className="mt-16 flex justify-center">
         <Link
