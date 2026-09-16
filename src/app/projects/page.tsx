@@ -7,12 +7,12 @@ import { projectDates } from '@/data/projectDates'
 import articles from '@/data/articles.json'
 
 import bucketsHero from './buckets/buckets.png'
-import mooveHero from './moove/moove_hero.png'
+import mooveHero from './moove/moove_hero.jpg'
 import returnWindowHero from './return-window/return_window.png'
-import cardboardHero from './cardboard-co/urban-billboard-mockup.png'
-import zapMakeHero from './zapier-or-make/zapier_vs_make_project_image.png'
+import cardboardHero from './cardboard-co/urban-billboard-mockup.jpg'
+import zapMakeHero from './zapier-or-make/zapier_vs_make_project_image.jpg'
 import claudeSkillsHero from './claude-code-skills/hero.png'
-import maxHero from './max/max_hero.png'
+import maxHero from './max/max_hero.jpg'
 import papayaHero from './papaya/papaya_hero.jpg'
 import hootenannyHero from './hootenanny/hootenanny_hero.png'
 import parsnipTeaser from './parsnip/parsnip_mock.png'
@@ -35,30 +35,24 @@ type Project = {
   badge?: { label: string; variant: 'soon' | 'pilot' }
 }
 
-// Ordered latest first (dates live in @/data/projectDates).
+// Shown latest first, sorted by the dates in @/data/projectDates.
+// Projects from the same month keep the order they have here.
 const projects: Project[] = [
-  {
-    name: 'iterator...',
-    slug: 'iterator',
-    description:
-      'A fun skeuomorphic web tool that turns birthdays and anniversaries into yearly Google Calendar events, each with the age or year count right in the title.',
-    href: '/projects/iterator',
-    image: iteratorHero,
-  },
-  {
-    name: "Queen's Quest",
-    slug: 'queens-quest',
-    description:
-      'A gamified RPG task planner. Real-life tasks become quests in a cozy top-down fantasy kingdom, with sub-tasks as chapters and rewards for finishing.',
-    image: qqTeaser,
-    badge: { label: 'Soon', variant: 'soon' },
-  },
   {
     name: 'Tender',
     slug: 'tender',
     description:
       'A gamified conversation starter for couples.',
     image: tenderTeaser,
+    badge: { label: 'Soon', variant: 'soon' },
+  },
+  {
+    name: 'Return Window',
+    slug: 'return-window',
+    description:
+      'Never miss a return deadline again. Forward your order confirmations and get reminded before return windows close.',
+    href: '/projects/return-window',
+    image: returnWindowHero,
     badge: { label: 'Soon', variant: 'soon' },
   },
   {
@@ -70,13 +64,20 @@ const projects: Project[] = [
     badge: { label: 'Soon', variant: 'soon' },
   },
   {
-    name: 'Return Window',
-    slug: 'return-window',
+    name: "Queen's Quest",
+    slug: 'queens-quest',
     description:
-      'Never miss a return deadline again. Forward your order confirmations and get reminded before return windows close.',
-    href: '/projects/return-window',
-    image: returnWindowHero,
+      'A gamified RPG task planner. Real-life tasks become quests in a cozy top-down fantasy kingdom, with sub-tasks as chapters and rewards for finishing.',
+    image: qqTeaser,
     badge: { label: 'Soon', variant: 'soon' },
+  },
+  {
+    name: 'iterator...',
+    slug: 'iterator',
+    description:
+      'A fun skeuomorphic web tool that turns birthdays and anniversaries into yearly Google Calendar events, each with the age or year count right in the title.',
+    href: '/projects/iterator',
+    image: iteratorHero,
   },
   {
     name: 'Hootenanny',
@@ -144,6 +145,21 @@ const projects: Project[] = [
     image: zapMakeHero,
   },
 ]
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+// Turns a date like "September 2026" into a number that sorts by month.
+function monthIndex(slug: string) {
+  const date = projectDates[slug]
+  if (!date) return -1
+  const [month, year] = date.split(' ')
+  if (!MONTHS.includes(month) || !/^\d{4}$/.test(year)) {
+    throw new Error(`projectDates["${slug}"] should look like "September 2026", got "${date}"`)
+  }
+  return Number(year) * 12 + MONTHS.indexOf(month)
+}
+
+const sortedProjects = [...projects].sort((a, b) => monthIndex(b.slug) - monthIndex(a.slug))
 
 function ProjectCardInner({ project }: { project: Project }) {
   const date = projectDates[project.slug]
@@ -237,7 +253,7 @@ export default function Work() {
           Projects
         </h2>
         <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
+          {sortedProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>

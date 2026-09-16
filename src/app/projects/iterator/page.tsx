@@ -1,9 +1,9 @@
 import { type Metadata } from 'next'
-import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { ProjectDate } from '@/components/ProjectDate'
+import { FeatureRow, Screenshot, TechStack } from '@/components/ProjectParts'
 
-import heroImg from './iterator_hero.png'
+import deskImg from './iterator_desk.png'
 import livePreviewGif from './iterator_live_preview.gif'
 import tearOffGif from './iterator_tear_off.gif'
 import yourEventsImg from './iterator_your_events.png'
@@ -18,54 +18,6 @@ export const metadata: Metadata = {
   title: 'iterator... - Birthday Calendar Events',
   description:
     'A fun skeuomorphic web tool that turns birthdays and anniversaries into yearly Google Calendar events, each with the age or year count right in the title.',
-}
-
-function FeatureRow({ feature, description }: { feature: string; description: string }) {
-  return (
-    <tr className="border-b border-zinc-200 dark:border-zinc-700">
-      <td className="whitespace-nowrap py-3 pr-4 font-medium text-zinc-900 dark:text-zinc-100">
-        {feature}
-      </td>
-      <td className="py-3 text-zinc-600 dark:text-zinc-400">{description}</td>
-    </tr>
-  )
-}
-
-function TechTag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-lg bg-orange-700/10 px-3 py-1.5 text-sm font-medium text-orange-700 dark:text-orange-400">
-      {children}
-    </span>
-  )
-}
-
-// wide: 2x desktop screenshots fill the content width. natural: GIFs stay at
-// their own pixel size so they don't blur. phone: the tall mobile screenshot.
-const screenshotSizes = {
-  wide: 'mx-auto w-full rounded-2xl',
-  natural: 'mx-auto rounded-2xl',
-  phone: 'mx-auto w-full max-w-xs rounded-2xl',
-}
-
-function Screenshot({
-  src,
-  alt,
-  caption,
-  size = 'wide',
-}: {
-  src: typeof heroImg
-  alt: string
-  caption: string
-  size?: keyof typeof screenshotSizes
-}) {
-  return (
-    <figure className="mt-8">
-      <Image src={src} alt={alt} className={screenshotSizes[size]} />
-      <figcaption className="mt-3 text-center text-sm text-zinc-500 dark:text-zinc-500">
-        {caption}
-      </figcaption>
-    </figure>
-  )
 }
 
 export default function Iterator() {
@@ -104,7 +56,7 @@ export default function Iterator() {
       </div>
 
       <Screenshot
-        src={heroImg}
+        src={deskImg}
         alt="The iterator desk calendar with an event filled in"
         caption="Filling in a birthday. The left page shows exactly what will land on the calendar."
       />
@@ -333,15 +285,10 @@ export default function Iterator() {
           <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
             Tech Stack
           </h2>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <TechTag>HTML</TechTag>
-            <TechTag>CSS</TechTag>
-            <TechTag>JavaScript</TechTag>
-            <TechTag>Web Animations API</TechTag>
-            <TechTag>iCalendar (.ics)</TechTag>
-            <TechTag>localStorage</TechTag>
-            <TechTag>Google Fonts</TechTag>
-          </div>
+          <TechStack
+            color="orange"
+            items={['HTML', 'CSS', 'JavaScript', 'Web Animations API', 'iCalendar (.ics)', 'localStorage', 'Google Fonts']}
+          />
         </section>
       </div>
     </Container>

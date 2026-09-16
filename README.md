@@ -1,42 +1,23 @@
-# Spotlight
+# Jason Schulke | Personal Website
 
-Spotlight is a [Tailwind Plus](https://tailwindcss.com/plus) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
+Source code for [jasonschulke.com](https://jasonschulke.com), the personal website of Jason Schulke, a Principal Solutions Architect and operations and CX leader in Austin, TX. I design the systems that connect scalable customer experiences, education, and back-end operations, and I build the apps, databases, and internal tools that make them real.
 
-## Getting started
+## On the site
 
-To get started with this template, first install the npm dependencies:
+- **[Experience](https://jasonschulke.com/experience):** support operations, customer education, and solutions architecture at Airtable, Common Room, and [Prep Work](https://prepwork.co).
+- **[Work](https://jasonschulke.com/projects):** side projects and small web tools, including [iterator...](https://jasonschulke.com/projects/iterator), [Hootenanny](https://jasonschulke.com/projects/hootenanny), [Buckets](https://jasonschulke.com/projects/buckets), and a [Zapier vs. Make pricing calculator](https://jasonschulke.com/projects/zapier-or-make).
+- **[Writing](https://jasonschulke.com/projects#writing):** essays on product education and operations from my Substack, [Product Education](https://producteducation.substack.com).
+
+## Built with
+
+Next.js (static export), React, TypeScript, and Tailwind CSS, based on the Tailwind Plus Spotlight template. Every push to `main` builds the site and deploys it to GitHub Pages.
 
 ```bash
 npm install
+npm run dev                        # http://localhost:3000
+node scripts/fetch-articles.mjs    # refresh the Writing list from Substack
 ```
 
-Next, create a `.env.local` file in the root of your project and set the `NEXT_PUBLIC_SITE_URL` variable to your site's public URL:
+## Connect
 
-```
-NEXT_PUBLIC_SITE_URL=https://example.com
-```
-
-Next, run the development server:
-
-```bash
-npm run dev
-```
-
-Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
-
-## Customizing
-
-You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
-
-## License
-
-This site template is a commercial product and is licensed under the [Tailwind Plus license](https://tailwindcss.com/plus/license).
-
-## Learn more
-
-To learn more about the technologies used in this site template, see the following resources:
-
-- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
-- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
-- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
-- [MDX](https://mdxjs.com) - the MDX documentation
+[LinkedIn](https://linkedin.com/in/jasonschulke) · [GitHub](https://github.com/jasonschulke) · [Substack](https://producteducation.substack.com)

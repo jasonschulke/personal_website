@@ -1,7 +1,7 @@
 import { type Metadata } from 'next'
-import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { ProjectDate } from '@/components/ProjectDate'
+import { FeatureRow, Screenshot, TechStack } from '@/components/ProjectParts'
 
 import eventPreviewImg from './hootenanny_event_preview.png'
 import createImg from './hootenanny_create.png'
@@ -12,44 +12,6 @@ export const metadata: Metadata = {
   title: 'Hootenanny - Playful Event Invitations',
   description:
     'An event invitation web app inspired by Apple Invites. Make an invite, share the link, and track RSVPs without asking guests to create an account.',
-}
-
-function FeatureRow({ feature, description }: { feature: string; description: string }) {
-  return (
-    <tr className="border-b border-zinc-200 dark:border-zinc-700">
-      <td className="whitespace-nowrap py-3 pr-4 font-medium text-zinc-900 dark:text-zinc-100">
-        {feature}
-      </td>
-      <td className="py-3 text-zinc-600 dark:text-zinc-400">{description}</td>
-    </tr>
-  )
-}
-
-function TechTag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-lg bg-amber-700/10 px-3 py-1.5 text-sm font-medium text-amber-700 dark:text-amber-400">
-      {children}
-    </span>
-  )
-}
-
-function Screenshot({
-  src,
-  alt,
-  caption,
-}: {
-  src: typeof eventPreviewImg
-  alt: string
-  caption: string
-}) {
-  return (
-    <figure className="mt-8">
-      <Image src={src} alt={alt} className="mx-auto w-full max-w-md rounded-2xl" />
-      <figcaption className="mt-3 text-center text-sm text-zinc-500 dark:text-zinc-500">
-        {caption}
-      </figcaption>
-    </figure>
-  )
 }
 
 export default function Hootenanny() {
@@ -69,6 +31,7 @@ export default function Hootenanny() {
 
       <Screenshot
         src={eventPreviewImg}
+        size="medium"
         alt="A finished Hootenanny invite, ready to share"
         caption="A finished invite, ready to share."
       />
@@ -105,6 +68,7 @@ export default function Hootenanny() {
           </p>
           <Screenshot
             src={createImg}
+            size="medium"
             alt="Building and previewing an event in Hootenanny"
             caption="The editor, with a live preview of the invite."
           />
@@ -124,6 +88,7 @@ export default function Hootenanny() {
           </p>
           <Screenshot
             src={rsvpsImg}
+            size="medium"
             alt="The host dashboard showing live RSVPs and the guest list"
             caption="The host view, once responses start coming in."
           />
@@ -194,6 +159,7 @@ export default function Hootenanny() {
           </p>
           <Screenshot
             src={signInImg}
+            size="medium"
             alt="The Hootenanny sign-in screen with its owl mascot"
             caption="The owl says hello at sign-in."
           />
@@ -203,14 +169,10 @@ export default function Hootenanny() {
           <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
             Tech Stack
           </h2>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <TechTag>React</TechTag>
-            <TechTag>Vite</TechTag>
-            <TechTag>Supabase</TechTag>
-            <TechTag>Netlify</TechTag>
-            <TechTag>Netlify Edge Functions</TechTag>
-            <TechTag>PWA / Service Worker</TechTag>
-          </div>
+          <TechStack
+            color="amber"
+            items={['React', 'Vite', 'Supabase', 'Netlify', 'Netlify Edge Functions', 'PWA / Service Worker']}
+          />
         </section>
       </div>
     </Container>

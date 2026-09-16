@@ -2,25 +2,15 @@ import { type Metadata } from 'next'
 import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { ProjectDate } from '@/components/ProjectDate'
+import { FeatureRow } from '@/components/ProjectParts'
 
-import appImage1 from './papaya_1.png'
+import appImage1 from './papaya_1.jpg'
 import appImage2 from './papaya_2.jpg'
 
 export const metadata: Metadata = {
   title: 'Papaya - House Search Companion',
   description:
     'A personal house hunting tool I built to save, rate, and organize homes from any listing site.',
-}
-
-function FeatureRow({ feature, description }: { feature: string; description: string }) {
-  return (
-    <tr className="border-b border-zinc-200 dark:border-zinc-700">
-      <td className="whitespace-nowrap py-3 pr-4 font-medium text-zinc-900 dark:text-zinc-100">
-        {feature}
-      </td>
-      <td className="py-3 text-zinc-600 dark:text-zinc-400">{description}</td>
-    </tr>
-  )
 }
 
 export default function Papaya() {

@@ -2,42 +2,15 @@ import { type Metadata } from 'next'
 import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { ProjectDate } from '@/components/ProjectDate'
+import { FeatureRow, LearningItem, TechStack } from '@/components/ProjectParts'
 
-import heroImage from './moove_hero.png'
-import highlightsImage from './moove_highlights.png'
+import heroImage from './moove_hero.jpg'
+import highlightsImage from './moove_highlights.jpg'
 
 export const metadata: Metadata = {
   title: 'Moove - Personal Workout Tracking PWA',
   description:
     'A minimalist, offline-first workout tracker with AI coaching built-in. Designed for people who want to stay consistent without the bloat.',
-}
-
-function FeatureRow({ feature, description }: { feature: string; description: string }) {
-  return (
-    <tr className="border-b border-zinc-200 dark:border-zinc-700">
-      <td className="whitespace-nowrap py-3 pr-4 font-medium text-zinc-900 dark:text-zinc-100">
-        {feature}
-      </td>
-      <td className="py-3 text-zinc-600 dark:text-zinc-400">{description}</td>
-    </tr>
-  )
-}
-
-function TechTag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-lg bg-indigo-500/10 px-3 py-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400">
-      {children}
-    </span>
-  )
-}
-
-function LearningItem({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="relative border-b border-zinc-100 py-3 pl-6 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-      <span className="absolute left-0 text-indigo-500">&#10003;</span>
-      {children}
-    </li>
-  )
 }
 
 export default function Moove() {
@@ -148,16 +121,10 @@ export default function Moove() {
           <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
             Tech Stack
           </h2>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <TechTag>React 19</TechTag>
-            <TechTag>TypeScript</TechTag>
-            <TechTag>Tailwind CSS v4</TechTag>
-            <TechTag>Vite 7</TechTag>
-            <TechTag>Netlify Functions</TechTag>
-            <TechTag>Netlify Blobs</TechTag>
-            <TechTag>Anthropic Claude API</TechTag>
-            <TechTag>Supabase</TechTag>
-          </div>
+          <TechStack
+            color="indigo"
+            items={['React 19', 'TypeScript', 'Tailwind CSS v4', 'Vite 7', 'Netlify Functions', 'Netlify Blobs', 'Anthropic Claude API', 'Supabase']}
+          />
         </section>
 
         <section className="mt-12">

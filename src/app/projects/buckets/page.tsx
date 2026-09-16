@@ -1,5 +1,12 @@
+import { type Metadata } from 'next'
 import { Container } from '@/components/Container'
 import { ProjectDate } from '@/components/ProjectDate'
+
+export const metadata: Metadata = {
+  title: 'Buckets - Retro Prioritization Tool',
+  description:
+    'A simple prioritization tool with a retro twist. Drop tasks into buckets, drag to reorder, and focus on what matters most.',
+}
 
 export default function Buckets() {
   return (

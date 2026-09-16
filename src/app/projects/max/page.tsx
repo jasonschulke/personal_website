@@ -3,33 +3,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/Container'
 import { ProjectDate } from '@/components/ProjectDate'
+import { FeatureRow, TechStack } from '@/components/ProjectParts'
 
-import heroImage from './max_hero.png'
+import heroImage from './max_hero.jpg'
 import settingsImage from './max_settings.png'
 
 export const metadata: Metadata = {
   title: 'Max - macOS Dock Customization Utility',
   description:
     'A lightweight menu bar app that gives you full control over your macOS Dock appearance with customizable visual effects, colors, and materials.',
-}
-
-function FeatureRow({ feature, description }: { feature: string; description: string }) {
-  return (
-    <tr className="border-b border-zinc-200 dark:border-zinc-700">
-      <td className="whitespace-nowrap py-3 pr-4 font-medium text-zinc-900 dark:text-zinc-100">
-        {feature}
-      </td>
-      <td className="py-3 text-zinc-600 dark:text-zinc-400">{description}</td>
-    </tr>
-  )
-}
-
-function TechTag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-lg bg-indigo-500/10 px-3 py-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400">
-      {children}
-    </span>
-  )
 }
 
 export default function Max() {
@@ -188,13 +170,10 @@ export default function Max() {
           <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
             Tech Stack
           </h2>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <TechTag>Swift</TechTag>
-            <TechTag>Combine</TechTag>
-            <TechTag>AppKit</TechTag>
-            <TechTag>NSKeyedArchiver</TechTag>
-            <TechTag>UserDefaults</TechTag>
-          </div>
+          <TechStack
+            color="indigo"
+            items={['Swift', 'Combine', 'AppKit', 'NSKeyedArchiver', 'UserDefaults']}
+          />
         </section>
 
         <section className="mt-12">

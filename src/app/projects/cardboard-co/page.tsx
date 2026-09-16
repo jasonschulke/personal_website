@@ -3,32 +3,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/Container'
 import { ProjectDate } from '@/components/ProjectDate'
+import { LearningItem, TechStack } from '@/components/ProjectParts'
 
-import billboardImage from './urban-billboard-mockup.png'
+import billboardImage from './urban-billboard-mockup.jpg'
 import devicesImage from './minimalistic-tablet-and-phone-mockup.png'
-import phoneImage from './womens-hands-holding-phone.png'
+import phoneImage from './womens-hands-holding-phone.jpg'
 
 export const metadata: Metadata = {
   title: 'Cardboard Co - Building & Testing a Local Service Business',
   description:
     'A case study in building a brand from scratch and testing product-market fit for a hyperlocal cardboard recycling service in Austin, TX.',
-}
-
-function TechTag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-lg bg-indigo-500/10 px-3 py-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400">
-      {children}
-    </span>
-  )
-}
-
-function LearningItem({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="relative border-b border-zinc-100 py-3 pl-6 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-      <span className="absolute left-0 text-indigo-500">&#10003;</span>
-      {children}
-    </li>
-  )
 }
 
 export default function CardboardCo() {
@@ -193,15 +177,10 @@ export default function CardboardCo() {
           <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
             Tech Stack
           </h2>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <TechTag>Next.js</TechTag>
-            <TechTag>Tailwind CSS</TechTag>
-            <TechTag>Stripe</TechTag>
-            <TechTag>Supabase</TechTag>
-            <TechTag>Val Town</TechTag>
-            <TechTag>Netlify</TechTag>
-            <TechTag>GitHub</TechTag>
-          </div>
+          <TechStack
+            color="indigo"
+            items={['Next.js', 'Tailwind CSS', 'Stripe', 'Supabase', 'Val Town', 'Netlify', 'GitHub']}
+          />
         </section>
 
         <section className="mt-12">

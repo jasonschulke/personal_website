@@ -1,5 +1,7 @@
 import { type Metadata } from 'next'
 
+import projectImage from './zapier_vs_make_project_image.jpg'
+
 export const metadata: Metadata = {
   title: 'Zapier vs Make Pricing Calculator - Find the Cheapest Automation Plan',
   description:
@@ -20,9 +22,9 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/projects/zapier-or-make/zapier_vs_make_project_image.png',
-        width: 1200,
-        height: 630,
+        url: projectImage.src,
+        width: projectImage.width,
+        height: projectImage.height,
         alt: 'Zapier vs Make Pricing Calculator',
       },
     ],
@@ -32,7 +34,7 @@ export const metadata: Metadata = {
     title: 'Zapier vs Make Pricing Calculator',
     description:
       'Compare Zapier and Make pricing side-by-side. Find the cheapest automation plan for your workflows.',
-    images: ['/projects/zapier-or-make/zapier_vs_make_project_image.png'],
+    images: [projectImage.src],
   },
 }
 

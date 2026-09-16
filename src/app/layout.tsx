@@ -29,7 +29,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: siteUrl,
+    // './' resolves to each page's own URL
+    url: './',
     siteName: 'Jason Schulke',
     title: 'Jason Schulke - Operations & CX Leader',
     description:
@@ -62,7 +63,8 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: siteUrl,
+    // './' resolves to each page's own URL, so every page is its own canonical
+    canonical: './',
   },
 }
 
