@@ -18,6 +18,7 @@ import hootenannyHero from './hootenanny/hootenanny_hero.png'
 import parsnipTeaser from './parsnip/parsnip_mock.png'
 import tenderTeaser from './tender/tender_teaser.png'
 import qqTeaser from './qq/qq_teaser.png'
+import iteratorHero from './iterator/iterator_hero.png'
 
 export const metadata: Metadata = {
   title: 'Work',
@@ -36,6 +37,14 @@ type Project = {
 
 // Ordered latest first (dates live in @/data/projectDates).
 const projects: Project[] = [
+  {
+    name: 'iterator...',
+    slug: 'iterator',
+    description:
+      'A fun skeuomorphic web tool that turns birthdays and anniversaries into yearly Google Calendar events, each with the age or year count right in the title.',
+    href: '/projects/iterator',
+    image: iteratorHero,
+  },
   {
     name: "Queen's Quest",
     slug: 'queens-quest',

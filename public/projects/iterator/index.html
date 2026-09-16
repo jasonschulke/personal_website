@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en" data-type="birthday">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iterator...</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Lilex:wght@400;500;600;700&family=Rubik+80s+Fade&display=swap">
+<style>
+  :root {
+    --bg: #fffdf8; --ink: #1d2a36; --muted: #7a6f66; --line: #e6e2d8; --line-strong: #c9c3b5;
+    --paper: #fcfaf5; --soft: #f6f2e8; --card: #fcfaf5; --card-2: #fbf6ec; --card-3: #f8f2e6;
+    --red: #DD4111; --red-dark: #a52e0a; --maroon: #8C0027; --mustard: #F1A512;
+    --L: 2.75rem;
+  }
+  :root, [data-type=birthday] { --accent: #DD4111; --accent-dark: #a52e0a; --accent-text: #DD4111; --accent-ink: #fff; --accent-soft: rgba(221,65,17,.14); }
+  [data-type=anniversary] { --accent: #F1A512; --accent-dark: #b8780a; --accent-text: #946004; --accent-ink: #1d2a36; --accent-soft: rgba(241,165,18,.22); }
+  [data-type=other] { --accent: #2f4a5c; --accent-dark: #1d2a36; --accent-text: #2f4a5c; --accent-ink: #fff; --accent-soft: rgba(47,74,92,.16); }
+  :root { --rule: var(--accent-soft); }
+  .detailpage { --rule: var(--accent-soft); }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; color: var(--ink); font: 15px/1.5 Lilex, ui-monospace, Menlo, monospace;
+    background: radial-gradient(60rem 30rem at 78% -6rem, rgba(241,165,18,.16), transparent 70%), var(--bg); }
+  main { max-width: 60rem; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
+
+  header { display: flex; align-items: center; justify-content: center; gap: .9rem; }
+  header svg.logo { width: 3.4rem; height: 3.4rem; color: var(--accent-text); flex: none; transition: color .4s; }
+  h1 { font-family: "Rubik 80s Fade", Anton, sans-serif; font-weight: 400; color: var(--accent-text); transition: color .4s; font-size: clamp(2.6rem, 6vw, 3.75rem); line-height: 1; margin: 0; }
+  .byline { color: var(--muted); margin: .6rem 0 3.25rem; text-align: center; }
+
+  /* ---------- desk calendar ---------- */
+  .desk { position: relative; perspective: 2000px; animation: drop .7s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes drop { from { transform: translateY(-30px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .board { position: absolute; left: -.55rem; right: -.55rem; top: -.45rem; bottom: -.7rem; background: linear-gradient(160deg, var(--accent), var(--accent-dark)); transition: background .4s; border-radius: .55rem; z-index: 0;
+    box-shadow: 0 24px 40px -18px rgba(29,42,54,.45); }
+  .rings { position: absolute; left: 3%; right: 3%; top: -1.75rem; height: 3.3rem; display: flex; justify-content: space-between; pointer-events: none; }
+  .rings.back { z-index: 1; } .rings.front { z-index: 25; }
+  .rings svg { width: 1.4rem; height: 3.3rem; overflow: visible; }
+
+  .sheet { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.15fr); background: var(--paper); border-radius: .3rem;
+    box-shadow: 0 1px 0 #ece5d6, 0 3px 0 #efe8da, 0 4px 0 #e3dbca, 0 6px 0 #ebe4d5, 0 7px 0 #ddd4c1; }
+  .sheet.fresh { animation: settle .8s cubic-bezier(.2,.8,.2,1); }
+  @keyframes settle { from { transform: translateY(-5px); opacity: .85; } to { transform: none; opacity: 1; } }
+
+  /* left: date */
+  .datepage { container-type: inline-size; position: relative; padding: 2.1rem 1.6rem 1.5rem; border-right: 1px dashed #d9d0bf; display: flex; flex-direction: column; min-height: calc(var(--L) * 9 + 3.5rem); }
+  .monthdisp { font-family: Anton, sans-serif; font-size: 2.2rem; line-height: 1; text-transform: uppercase; letter-spacing: .02em; color: var(--ink); }
+  .bar { height: .55rem; background: var(--accent); margin: .9rem -1.6rem .9rem; }
+  .weekday { font-family: Anton, sans-serif; font-size: 1.35rem; text-transform: uppercase; color: var(--accent-text); letter-spacing: .03em; min-height: 1.9rem; }
+  .bigday { all: unset; cursor: text; font-family: Anton, sans-serif; font-size: clamp(2.8rem, 17cqw, 8rem); line-height: .95; color: var(--accent-text); display: flex; white-space: nowrap; align-items: baseline; gap: .25em; margin: auto 0; }
+  .bigmon { color: var(--ink); text-transform: uppercase; }
+  .bigyr { color: var(--muted); }
+  .bigyr.ph { opacity: .35; }
+  .bigday .ph, .monthdisp .ph { color: var(--accent); opacity: .22; }
+  .bigday:focus-visible { outline: 2px dashed var(--accent); outline-offset: 4px; }
+  .bigday #dayDisp.flip { display: inline-block; animation: flipin .35s cubic-bezier(.2,.8,.2,1); }
+  @keyframes flipin { from { transform: translateY(-.15em) rotateX(40deg); opacity: .2; } to { transform: none; opacity: 1; } }
+  .foot { min-height: 4.4rem; display: flex; align-items: flex-end; }
+  .foot .ttl { font-family: Anton, sans-serif; font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.15; color: var(--ink); letter-spacing: .01em; overflow-wrap: anywhere; }
+  .foot .num { color: var(--accent-text); }
+  .foot .ph2 { color: rgba(29,42,54,.22); }
+  .foot .num.ph2 { color: var(--accent); opacity: .3; }
+  .footsub { font-size: .8rem; color: var(--muted); }
+  #stopMax { opacity: 0; transition: opacity .2s; }
+  #stop:focus + #stopMax, #stopMax.show { opacity: 1; }
+
+  .daterow { display: flex; align-items: center; gap: .35rem; }
+  .mwrap { position: relative; }
+  .monthbtn { font: inherit; font-size: 1.05rem; min-width: 7ch; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; align-items: center; gap: .25rem; border-bottom: 1px dashed var(--line-strong); }
+  .monthbtn svg { width: .8rem; height: .8rem; color: var(--accent-text); transition: transform .2s; }
+  .monthbtn[aria-expanded=true] svg { transform: rotate(180deg); }
+  .monthmenu { position: absolute; top: 1.9rem; left: -.5rem; z-index: 30; display: grid; grid-template-columns: repeat(3, 1fr); gap: .15rem; padding: .35rem; width: 15rem;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(16px); border-radius: .75rem; box-shadow: 0 10px 24px rgba(29,42,54,.15), 0 0 0 1px rgba(29,42,54,.08); }
+  .monthmenu[hidden] { display: none; }
+  .monthmenu button { font: inherit; font-size: .85rem; border: 0; background: none; border-radius: .45rem; padding: .45rem 0; cursor: pointer; color: var(--ink); }
+  .monthmenu button:hover { background: var(--accent-soft); }
+  .monthmenu button[aria-selected=true] { background: var(--accent); color: var(--accent-ink); }
+  .field input.dd2 { width: 2.2ch; text-align: center; }
+  .field input.yy { width: 4.2ch; }
+  .sep { color: var(--muted); }
+  .agehint { font-size: .8rem; color: var(--accent-text); margin-left: .5rem; white-space: nowrap; }
+  .swap { margin-left: auto; font: inherit; font-size: .75rem; color: var(--muted); background: none; border: 1px dashed var(--line-strong); border-radius: 999px; padding: .05rem .55rem; cursor: pointer; white-space: nowrap; }
+  .swap:hover { color: var(--accent); border-color: var(--accent); }
+  .daterow { width: 100%; }
+
+  /* right: details on ruled lines */
+  .detailpage { position: relative; padding: 1.75rem 1.8rem 1.75rem;
+    background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--L) - 1px), var(--rule) calc(var(--L) - 1px) var(--L));
+    background-position: 0 1.75rem; background-repeat: repeat; }
+  .field { height: var(--L); display: grid; grid-template-columns: 7.5rem 1fr; align-items: center; }
+  .field > label, .field > .flbl { white-space: nowrap; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .field input { all: unset; font: inherit; font-size: 1.05rem; color: var(--ink); line-height: 1.6rem; }
+  .field input::placeholder { color: #cfc5b3; }
+  .field input:focus { box-shadow: 0 2px 0 var(--accent); }
+  .inline { display: flex; gap: .5rem; align-items: center; }
+  .inline input { width: 2.5ch; text-align: left; }
+  .unit { font: inherit; font-size: 1.05rem; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; border-bottom: 1px dashed var(--line-strong); }
+  .types { display: flex; gap: .4rem; flex-wrap: nowrap; }
+  .types button { font: inherit; font-size: .85rem; border: 1.5px solid var(--accent); color: var(--accent-text); background: transparent; border-radius: 999px; padding: .05rem .7rem; cursor: pointer; transition: background .15s, color .15s, transform .15s; }
+  .types button[aria-pressed=true] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .types button:active { transform: scale(.95); }
+  .ticket { height: calc(var(--L) * 3); padding: .4rem 0; }
+  .ticket > div { height: 100%; border: 1.5px dashed var(--accent); border-radius: .5rem; padding: .7rem 1rem; background: var(--paper); display: flex; flex-direction: column; justify-content: center; }
+  .ticket .k { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .ticket .t { font-weight: 700; font-size: 1.1rem; min-height: 1.6rem; }
+  .ticket .t .n { color: var(--accent); display: inline-block; }
+  .ticket .t .n.bump { animation: bump .35s cubic-bezier(.2,.8,.2,1); }
+  @keyframes bump { from { transform: translateY(-.4rem); opacity: 0; } to { transform: none; opacity: 1; } }
+  .ticket .m { font-size: .8rem; color: var(--muted); }
+  .actions { height: calc(var(--L) * 2); display: flex; justify-content: space-between; align-items: center; margin-top: 0; }
+  .count { font-size: .8rem; color: var(--muted); display: flex; align-items: center; gap: 1rem; height: var(--L); align-self: flex-end; }
+  .editacts { display: flex; gap: .9rem; }
+  .editacts[hidden] { display: none; }
+  .editacts button { font: inherit; font-size: .8rem; background: none; border: 0; padding: 0; cursor: pointer; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .editacts #deleteEdit { color: var(--accent-text); }
+  .curl { --c: 5.5rem; position: absolute; right: 0; bottom: 0; width: var(--c); height: var(--c); padding: 0; border: 0; background: none; cursor: pointer; z-index: 5;
+    transition: width .45s cubic-bezier(.2,.8,.2,1), height .45s cubic-bezier(.2,.8,.2,1); border-radius: 0 0 .3rem 0; }
+  .curl:hover:not(:disabled), .curl:focus-visible { --c: 8rem; outline: none; }
+  .curl:active:not(:disabled) { --c: 9.5rem; }
+  .curl:disabled { --c: 5rem; cursor: default; }
+  .curl-reveal { position: absolute; inset: 0; background: linear-gradient(135deg, #e6dcc7, #f3ecde 55%, #f7f2e7); clip-path: polygon(100% 0, 100% 100%, 0 100%); border-radius: 0 0 .3rem 0; transition: background .4s; }
+
+  .curl-lbl { position: absolute; left: 68%; top: 68%; transform: translate(-50%, -50%) rotate(-45deg); transform-origin: 50% 50%; display: inline-flex; align-items: center; gap: .3rem; color: var(--accent-text);
+    font: 700 .78rem/1 Lilex, monospace; letter-spacing: .04em; white-space: nowrap; transition: opacity .3s; }
+  .curl-lbl svg { width: .9rem; height: .9rem; flex: none; }
+  .curl:not(:hover):not(:focus-visible) .curl-lbl { font-size: .68rem; }
+  .curl:disabled .curl-lbl { opacity: .45; color: var(--muted); font-size: .58rem; left: 70%; top: 70%; }
+  .curl:disabled .curl-lbl svg { width: .7rem; height: .7rem; }
+  .curl-flap { position: absolute; inset: 0; clip-path: polygon(0 0, 100% 0, 0 100%); border-radius: 0 0 0 0;
+    background: linear-gradient(135deg, #fffdf8 0%, #f4eee1 30%, #e3d8c2 46%, #cfc2a6 50%); }
+  .curl::before { content: ""; position: absolute; inset: 0; clip-path: polygon(0 0, 100% 0, 0 100%); transform: translate(-2px,-2px); background: rgba(29,42,54,.14); filter: blur(2px); z-index: -1; }
+  .curl-flap::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 44%, rgba(29,42,54,.12) 50%); }
+  .curl.pulse { animation: curlpulse 1s cubic-bezier(.2,.8,.2,1); }
+  @keyframes curlpulse { 0% { width: 4.6rem; height: 4.6rem; } 50% { width: 7rem; height: 7rem; } 100% { } }
+  .create { font: inherit; font-weight: 700; font-size: .95rem; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 999px; padding: .5rem 1.1rem; cursor: pointer; box-shadow: 0 3px 0 var(--accent-dark); display: inline-flex; gap: .4rem; align-items: center; }
+  .create:active { transform: translateY(3px); box-shadow: none; }
+  .create:disabled { opacity: .35; cursor: default; }
+  .create svg { width: 1rem; height: 1rem; }
+  .create.round { width: 5rem; height: 5rem; padding: 0; border-radius: 50%; flex-direction: column; justify-content: center; gap: .1rem; box-shadow: 0 4px 0 var(--accent-dark); }
+  .create.round svg { width: 1.9rem; height: 1.9rem; }
+  .create.round span { font-size: .72rem; font-weight: 600; letter-spacing: .04em; text-transform: lowercase; }
+  .create.round:active { transform: translateY(4px); box-shadow: none; }
+
+  /* tearing sheet */
+  .torn { position: fixed; z-index: 60; pointer-events: none; transform-origin: 0 0; }
+  .torn .sheet { box-shadow: 0 18px 40px rgba(29,42,54,.25); }
+  .torn::before { content: ""; position: absolute; left: 0; right: 0; top: -7px; height: 14px; z-index: 5;
+    background: radial-gradient(circle at 7px 0, transparent 6px, var(--paper) 6.5px) 0 0 / 14px 14px repeat-x; }
+  .torn input { pointer-events: none; }
+
+  /* ---------- collection: pile of torn pages ---------- */
+  .collection { margin-top: 4rem; }
+  .collection h2 { font-size: .8rem; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.25rem 1.5rem; padding: .5rem .5rem 0; align-items: start; }
+  .stack { position: relative; }
+  .pile { position: relative; transform: rotate(var(--r)); }
+  .under { position: absolute; inset: 0; background: #f5efe2; border-radius: .2rem; box-shadow: 0 1px 3px rgba(29,42,54,.1); }
+  .under.u1 { transform: translate(5px,5px) rotate(2deg); }
+  .under.u2 { transform: translate(10px,9px) rotate(4deg); background: #efe7d6; }
+  .mp { container-type: inline-size; position: relative; background: var(--paper); padding: 1rem 1rem .8rem; border-radius: 0 0 .25rem .25rem; box-shadow: 0 1px 0 #ece5d6, 0 8px 20px -6px rgba(29,42,54,.18); }
+  .mp::before { content: ""; position: absolute; left: 0; right: 0; top: -6px; height: 12px; background: radial-gradient(circle at 6px 0, transparent 5px, var(--paper) 5.5px) 0 0 / 12px 12px repeat-x; }
+  .mm { font-family: Anton, sans-serif; text-transform: uppercase; font-size: clamp(1.1rem, 12.5cqw, 2rem); line-height: 1; color: var(--ink); }
+  .mdrow { display: flex; align-items: baseline; justify-content: flex-start; gap: .5rem; padding: .45rem 0 .2rem; white-space: nowrap; }
+  .mdrow .mr { margin-left: auto; align-self: center; display: inline-flex; align-items: center; gap: .2rem; font-size: .7rem; color: var(--muted); }
+  .mdrow .mr svg { width: .75rem; height: .75rem; }
+  .myr { font-family: Anton, sans-serif; font-size: clamp(1.1rem, 12.5cqw, 2rem); color: var(--muted); line-height: 1; }
+  .mbar { height: 2px; background: var(--accent); margin: .5rem -1rem .3rem; }
+  .mw { display: none; }
+  .md { font-family: Anton, sans-serif; color: var(--accent-text); font-size: clamp(1.1rem, 12.5cqw, 2rem); line-height: 1; }
+  .mt { font-family: Lilex, monospace; font-weight: 600; font-size: .85rem; line-height: 1.3; min-height: 2.2rem; padding-right: 2.2rem; overflow-wrap: anywhere; color: var(--ink); display: flex; align-items: center; }
+  .mt em { font-style: normal; color: var(--accent-text); }
+  .mmeta { display: flex; justify-content: flex-end; align-items: center; font-size: .7rem; color: var(--muted); margin-top: .2rem; }
+  .mmeta span { display: inline-flex; align-items: center; gap: .2rem; }
+  .mmeta svg { width: .75rem; height: .75rem; }
+  .pilecap { display: flex; justify-content: space-between; align-items: center; font-size: .72rem; color: var(--muted); margin-top: .85rem; }
+  .flyup .mp { box-shadow: 0 18px 40px rgba(29,42,54,.25); }
+  .medit { position: absolute; top: .3rem; right: .15rem; width: 2.75rem; height: 2.75rem; border-radius: 50%; border: 0; background: transparent; color: var(--muted); display: grid; place-items: center; cursor: pointer; }
+  .medit svg { width: 1rem; height: 1rem; }
+  .medit:hover { background: var(--accent-soft); color: var(--accent-text); }
+  .pile.editing .mp { outline: 2px dashed var(--accent); outline-offset: 4px; }
+  .pilecap button { border: 0; background: none; color: var(--muted); cursor: pointer; font: inherit; font-size: 1rem; line-height: 1; padding: .15rem .35rem; border-radius: .35rem; }
+  .pilecap button:hover { color: var(--accent); background: var(--accent-soft); }
+  .empty { border: 1.5px dashed var(--line-strong); border-radius: .4rem; padding: 1.5rem; text-align: center; color: var(--muted); font-size: .85rem; grid-column: 1 / -1; }
+  .dl { display: flex; gap: 1rem; align-items: center; margin-top: 2.5rem; flex-wrap: wrap; }
+  .dl[hidden] { display: none; }
+  .dl { --accent: #DD4111; --accent-dark: #a52e0a; --accent-ink: #fff; }
+  .dl .tag { font-family: Anton, sans-serif; font-size: 1.4rem; line-height: 1.1; }
+  .dl .tag small { display: block; font-family: Lilex, monospace; font-size: .75rem; color: var(--muted); }
+  .dl a { color: var(--ink); font-size: .8rem; }
+  .create.rect { border-radius: .5rem; padding: .65rem 1.1rem; }
+
+  @media (max-width: 760px) {
+    .sheet { grid-template-columns: minmax(0,1fr); }
+    .datepage { border-right: 0; border-bottom: 1px dashed #d9d0bf; min-height: 18rem; }
+    .field { grid-template-columns: 7rem 1fr; }
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .detailpage { padding-left: 1.25rem; padding-right: 1.25rem; }
+  }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr 1fr; gap: 1.75rem 1rem; } .mdrow .mr { display: none; } .types button { font-size: .75rem; padding: .05rem .45rem; } .swap { font-size: .68rem; padding: .05rem .4rem; }  .field { grid-template-columns: 5.4rem minmax(0,1fr); } .field > label, .field > .flbl { font-size: .62rem; letter-spacing: .05em; } .types { gap: .25rem; } .detailpage { padding-left: 1rem; padding-right: 1rem; } .types button { padding: .05rem .5rem; } }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <header><svg class="logo" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true"><rect x="12.91" y="0.91" width="1.18" height="1.18"/><rect x="15.91" y="0.91" width="1.18" height="1.18"/><rect x="30.91" y="0.91" width="1.18" height="1.18"/><rect x="33.91" y="0.91" width="1.18" height="1.18"/><rect x="12.86" y="3.86" width="1.28" height="1.28"/><rect x="15.86" y="3.86" width="1.28" height="1.28"/><rect x="30.86" y="3.86" width="1.28" height="1.28"/><rect x="33.86" y="3.86" width="1.28" height="1.28"/><rect x="6.81" y="6.81" width="1.38" height="1.38"/><rect x="9.81" y="6.81" width="1.38" height="1.38"/><rect x="12.81" y="6.81" width="1.38" height="1.38"/><rect x="15.81" y="6.81" width="1.38" height="1.38"/><rect x="18.81" y="6.81" width="1.38" height="1.38"/><rect x="21.81" y="6.81" width="1.38" height="1.38"/><rect x="24.81" y="6.81" width="1.38" height="1.38"/><rect x="27.81" y="6.81" width="1.38" height="1.38"/><rect x="30.81" y="6.81" width="1.38" height="1.38"/><rect x="33.81" y="6.81" width="1.38" height="1.38"/><rect x="36.81" y="6.81" width="1.38" height="1.38"/><rect x="39.81" y="6.81" width="1.38" height="1.38"/><rect x="3.76" y="9.76" width="1.48" height="1.48"/><rect x="6.76" y="9.76" width="1.48" height="1.48"/><rect x="9.76" y="9.76" width="1.48" height="1.48"/><rect x="12.76" y="9.76" width="1.48" height="1.48"/><rect x="15.76" y="9.76" width="1.48" height="1.48"/><rect x="18.76" y="9.76" width="1.48" height="1.48"/><rect x="21.76" y="9.76" width="1.48" height="1.48"/><rect x="24.76" y="9.76" width="1.48" height="1.48"/><rect x="27.76" y="9.76" width="1.48" height="1.48"/><rect x="30.76" y="9.76" width="1.48" height="1.48"/><rect x="33.76" y="9.76" width="1.48" height="1.48"/><rect x="36.76" y="9.76" width="1.48" height="1.48"/><rect x="39.76" y="9.76" width="1.48" height="1.48"/><rect x="42.76" y="9.76" width="1.48" height="1.48"/><rect x="3.71" y="12.71" width="1.57" height="1.57"/><rect x="6.71" y="12.71" width="1.57" height="1.57"/><rect x="9.71" y="12.71" width="1.57" height="1.57"/><rect x="12.71" y="12.71" width="1.57" height="1.57"/><rect x="15.71" y="12.71" width="1.57" height="1.57"/><rect x="18.71" y="12.71" width="1.57" height="1.57"/><rect x="21.71" y="12.71" width="1.57" height="1.57"/><rect x="24.71" y="12.71" width="1.57" height="1.57"/><rect x="27.71" y="12.71" width="1.57" height="1.57"/><rect x="30.71" y="12.71" width="1.57" height="1.57"/><rect x="33.71" y="12.71" width="1.57" height="1.57"/><rect x="36.71" y="12.71" width="1.57" height="1.57"/><rect x="39.71" y="12.71" width="1.57" height="1.57"/><rect x="42.71" y="12.71" width="1.57" height="1.57"/><rect x="3.66" y="15.66" width="1.67" height="1.67"/><rect x="6.66" y="15.66" width="1.67" height="1.67"/><rect x="9.66" y="15.66" width="1.67" height="1.67"/><rect x="12.66" y="15.66" width="1.67" height="1.67"/><rect x="15.66" y="15.66" width="1.67" height="1.67"/><rect x="18.66" y="15.66" width="1.67" height="1.67"/><rect x="21.66" y="15.66" width="1.67" height="1.67"/><rect x="24.66" y="15.66" width="1.67" height="1.67"/><rect x="27.66" y="15.66" width="1.67" height="1.67"/><rect x="30.66" y="15.66" width="1.67" height="1.67"/><rect x="33.66" y="15.66" width="1.67" height="1.67"/><rect x="36.66" y="15.66" width="1.67" height="1.67"/><rect x="39.66" y="15.66" width="1.67" height="1.67"/><rect x="42.66" y="15.66" width="1.67" height="1.67"/><rect x="3.57" y="21.57" width="1.87" height="1.87"/><rect x="12.57" y="21.57" width="1.87" height="1.87"/><rect x="15.57" y="21.57" width="1.87" height="1.87"/><rect x="21.57" y="21.57" width="1.87" height="1.87"/><rect x="24.57" y="21.57" width="1.87" height="1.87"/><rect x="30.57" y="21.57" width="1.87" height="1.87"/><rect x="33.57" y="21.57" width="1.87" height="1.87"/><rect x="42.57" y="21.57" width="1.87" height="1.87"/><rect x="3.52" y="24.52" width="1.97" height="1.97"/><rect x="12.52" y="24.52" width="1.97" height="1.97"/><rect x="15.52" y="24.52" width="1.97" height="1.97"/><rect x="21.52" y="24.52" width="1.97" height="1.97"/><rect x="24.52" y="24.52" width="1.97" height="1.97"/><rect x="30.52" y="24.52" width="1.97" height="1.97"/><rect x="33.52" y="24.52" width="1.97" height="1.97"/><rect x="42.52" y="24.52" width="1.97" height="1.97"/><rect x="3.47" y="27.47" width="2.06" height="2.06"/><rect x="42.47" y="27.47" width="2.06" height="2.06"/><rect x="3.42" y="30.42" width="2.16" height="2.16"/><rect x="12.42" y="30.42" width="2.16" height="2.16"/><rect x="15.42" y="30.42" width="2.16" height="2.16"/><rect x="21.42" y="30.42" width="2.16" height="2.16"/><rect x="24.42" y="30.42" width="2.16" height="2.16"/><rect x="30.42" y="30.42" width="2.16" height="2.16"/><rect x="33.42" y="30.42" width="2.16" height="2.16"/><rect x="42.42" y="30.42" width="2.16" height="2.16"/><rect x="3.37" y="33.37" width="2.26" height="2.26"/><rect x="12.37" y="33.37" width="2.26" height="2.26"/><rect x="15.37" y="33.37" width="2.26" height="2.26"/><rect x="21.37" y="33.37" width="2.26" height="2.26"/><rect x="24.37" y="33.37" width="2.26" height="2.26"/><rect x="30.37" y="33.37" width="2.26" height="2.26"/><rect x="33.37" y="33.37" width="2.26" height="2.26"/><rect x="42.37" y="33.37" width="2.26" height="2.26"/><rect x="3.32" y="36.32" width="2.36" height="2.36"/><rect x="42.32" y="36.32" width="2.36" height="2.36"/><rect x="3.27" y="39.27" width="2.46" height="2.46"/><rect x="42.27" y="39.27" width="2.46" height="2.46"/><rect x="6.22" y="42.22" width="2.55" height="2.55"/><rect x="9.22" y="42.22" width="2.55" height="2.55"/><rect x="12.22" y="42.22" width="2.55" height="2.55"/><rect x="15.22" y="42.22" width="2.55" height="2.55"/><rect x="18.22" y="42.22" width="2.55" height="2.55"/><rect x="21.22" y="42.22" width="2.55" height="2.55"/><rect x="24.22" y="42.22" width="2.55" height="2.55"/><rect x="27.22" y="42.22" width="2.55" height="2.55"/><rect x="30.22" y="42.22" width="2.55" height="2.55"/><rect x="33.22" y="42.22" width="2.55" height="2.55"/><rect x="36.22" y="42.22" width="2.55" height="2.55"/><rect x="39.22" y="42.22" width="2.55" height="2.55"/></svg><h1>iterator...</h1></header>
+  <p class="byline">Birthdays and anniversaries that count the years.</p>
+
+  <div class="desk" id="desk">
+    <div class="board"></div>
+    <div class="rings back" id="ringsBack"></div>
+    <div class="sheet" id="sheet">
+      <section class="datepage" aria-label="First event preview">
+        <div class="foot" id="foot"></div>
+        <div class="bar"></div>
+        <div class="weekday" id="weekday">&nbsp;</div>
+        <button type="button" class="bigday" id="bigday" aria-label="Edit date"><span class="bigmon" id="monthDisp"></span><span id="dayDisp" class="ph">14</span><span class="bigyr" id="yearDisp"></span></button>
+        <div class="footsub" id="footSub">Fill in the date</div>
+      </section>
+
+      <section class="detailpage" aria-label="Details">
+        <div class="field"><label for="name">Name</label><input id="name" placeholder="Alex" autocomplete="off"></div>
+        <div class="field"><span class="flbl">Type</span>
+          <div class="types" id="types">
+            <button type="button" data-v="birthday" aria-pressed="true">Birthday</button>
+            <button type="button" data-v="anniversary" aria-pressed="false">Anniversary</button>
+            <button type="button" data-v="other" aria-pressed="false">Other</button>
+          </div></div>
+        <div class="field"><label for="monthBtn">Month</label>
+          <div class="daterow"><div class="mwrap"><button type="button" class="monthbtn" id="monthBtn" aria-haspopup="listbox" aria-expanded="false"><span id="monthLabel"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg></button>
+              <div class="monthmenu" id="monthMenu" role="listbox" hidden></div></div></div></div>
+        <div class="field"><label for="day">Day</label>
+          <div class="daterow"><input id="day" inputmode="numeric" maxlength="2" placeholder="dd" aria-label="Day of month" class="dd2"></div></div>
+        <div class="field"><label for="year" id="yearLbl">Birth year</label>
+          <div class="daterow">
+            <input id="year" inputmode="numeric" maxlength="4" placeholder="yyyy" aria-label="Year" class="yy">
+            <span class="agehint" id="ageHint"></span>
+            <button type="button" class="swap" id="swap" aria-label="Enter age instead of year">or age</button>
+          </div></div>
+        <div class="field"><label for="remind">Reminder</label>
+          <div class="inline"><input id="remind" inputmode="numeric" value="1" aria-label="Reminder amount"><button type="button" class="unit" id="unit" data-v="W">week before</button></div></div>
+        <div class="field"><label for="stop" id="stopLbl">Stop at age</label><div class="inline"><input id="stop" inputmode="numeric" maxlength="3" value="100" style="width:4ch;text-align:left" aria-describedby="stopMax"><span class="agehint" id="stopMax" style="color:var(--muted)">max 100</span></div></div>
+        <button class="curl" id="create" disabled aria-label="Create event">
+          <span class="curl-reveal"><span class="curl-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg><span id="createLbl">create</span></span></span>
+          <span class="curl-flap"></span>
+        </button>
+        <div class="actions">
+          <span class="count"><span id="count" hidden></span><span class="editacts" id="editActs" hidden><button type="button" id="cancelEdit">Cancel</button><button type="button" id="deleteEdit">Delete</button></span></span>
+          
+        </div>
+      </section>
+    </div>
+    <div class="rings front" id="ringsFront"></div>
+  </div>
+
+  <section class="collection" aria-label="Created events">
+    <h2><span>Your events</span><span id="total"></span></h2>
+    <div class="grid" id="grid"></div>
+    <div class="dl" id="dl" hidden>
+      <button class="create rect" id="download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>Download</button>
+      <div class="tag"><span id="dlText">0 events</span><small>one .ics file</small></div>
+      <a href="https://calendar.google.com/calendar/u/0/r/settings/export" target="_blank" rel="noopener">Then import in Google Calendar ↗</a>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  // Domain used for event IDs in the .ics file. Change to your own.
+  const ICS_DOMAIN = "jasonschulke.com";
+  const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const PENCIL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>`;
+  const BELL = `<svg class="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>`;
+  const ord = n => { const a = n % 100, b = n % 10; if (a >= 11 && a <= 13) return n + "th"; return n + (b === 1 ? "st" : b === 2 ? "nd" : b === 3 ? "rd" : "th"); };
+  const poss = s => /^(our|my|your|their|his|her|the)\b/i.test(s) ? s : /s$/i.test(s) ? s + "'" : s + "'s";
+  const pad = n => String(n).padStart(2, "0");
+  const now = new Date();
+  let month = now.getMonth() + 1, type = "birthday", lastN = null, ageMode = false;
+  let items = []; try { items = JSON.parse(localStorage.getItem("iterator.desk") || "[]"); } catch (e) {}
+  const save = () => { try { localStorage.setItem("iterator.desk", JSON.stringify(items)); } catch (e) {} };
+
+  /* rings that loop over the top edge */
+  function buildRings() {
+    const w = $("desk").offsetWidth, n = Math.max(6, Math.round(w / 62));
+    const back = '<svg viewBox="0 0 18 42"><path d="M9 4 C 15 4, 16 10, 15.5 19" fill="none" stroke="#5f5953" stroke-width="3" stroke-linecap="round"/></svg>';
+    const front = '<svg viewBox="0 0 18 42"><ellipse cx="9" cy="32" rx="3.4" ry="2.6" fill="#3b2a22"/>' +
+      '<path d="M8 31 C 2.5 26, 2.5 6, 9 4" fill="none" stroke="#8d867f" stroke-width="3.4" stroke-linecap="round"/>' +
+      '<path d="M6.8 26 C 4.6 20, 4.8 9, 8.4 6" fill="none" stroke="#d8d3cd" stroke-width="1.1" stroke-linecap="round" opacity=".9"/></svg>';
+    $("ringsBack").innerHTML = back.repeat(n); $("ringsFront").innerHTML = front.repeat(n);
+  }
+  buildRings(); addEventListener("resize", buildRings);
+
+  /* month menu */
+  function renderMonth() {
+    $("monthLabel").textContent = MONTHS[month - 1];
+    $("monthMenu").innerHTML = "";
+    MONTHS.forEach((m, i) => { const b = document.createElement("button"); b.type = "button"; b.setAttribute("role", "option"); b.setAttribute("aria-selected", String(i + 1 === month)); b.textContent = m.slice(0, 3);
+      b.onclick = e => { e.stopPropagation(); month = i + 1; closeMonth(); renderMonth(); clampDay(); update(); $("day").focus(); }; $("monthMenu").append(b); });
+  }
+  function closeMonth() { $("monthMenu").hidden = true; $("monthBtn").setAttribute("aria-expanded", "false"); }
+  $("monthBtn").onclick = e => { e.stopPropagation(); const open = $("monthMenu").hidden; $("monthMenu").hidden = !open; $("monthBtn").setAttribute("aria-expanded", String(open));
+    if (open) ($("monthMenu").querySelector("[aria-selected=true]") || $("monthMenu").firstElementChild).focus(); };
+  $("monthMenu").addEventListener("keydown", e => {
+    const b = [...$("monthMenu").querySelectorAll("button")], i = b.indexOf(document.activeElement); if (i < 0) return;
+    const step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 3, ArrowUp: -3 }[e.key];
+    if (step) { e.preventDefault(); b[(i + step + 12) % 12].focus(); }
+    if (e.key === "Home") { e.preventDefault(); b[0].focus(); } if (e.key === "End") { e.preventDefault(); b[11].focus(); }
+    if (e.key === "Escape" || e.key === "Tab") { closeMonth(); if (e.key === "Escape") { e.preventDefault(); $("monthBtn").focus(); } }
+  });
+  document.addEventListener("click", closeMonth);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeMonth(); });
+  renderMonth();
+
+  /* day 1..31 (and not past the month) */
+  const maxDay = () => new Date(2000, month, 0).getDate();
+  function clampDay() { const v = +$("day").value; if (v && v > maxDay()) $("day").value = maxDay(); }
+  $("day").addEventListener("input", () => {
+    let v = $("day").value.replace(/\D/g, "").slice(0, 2);
+    if (v.length === 2 && (+v < 1 || +v > maxDay())) v = v.slice(1);
+    if (v === "0" || v === "00") v = v === "0" ? "0" : "";
+    $("day").value = v; update();
+  });
+  function stepDay(d) { let v = +$("day").value || (d > 0 ? 0 : 1); v += d; if (v < 1) v = maxDay(); if (v > maxDay()) v = 1; $("day").value = v; update(); }
+  $("day").addEventListener("keydown", e => { if (e.key === "ArrowUp") { e.preventDefault(); stepDay(1); } if (e.key === "ArrowDown") { e.preventDefault(); stepDay(-1); } });
+  $("day").addEventListener("blur", () => { if ($("day").value === "0") { $("day").value = ""; update(); } });
+  $("bigday").onclick = () => $("day").focus();
+  $("year").addEventListener("input", () => { $("year").value = $("year").value.replace(/\D/g, "").slice(0, ageMode ? 3 : 4); update(); });
+  function yearLabel() { $("yearLbl").textContent = ageMode ? (type === "birthday" ? "Turning" : "Year count") : (type === "birthday" ? "Birth year" : "Start year"); }
+  function setAgeMode(on, quiet) {
+    ageMode = on; $("year").value = "";
+    $("year").maxLength = on ? 3 : 4; $("year").placeholder = on ? "15" : "yyyy";
+    $("year").classList.toggle("yy", !on); $("year").classList.toggle("dd2", on);
+    $("year").setAttribute("aria-label", on ? "Age they are turning" : "Year");
+    yearLabel();
+    $("swap").textContent = on ? "or year" : "or age";
+    $("swap").setAttribute("aria-label", on ? "Enter year instead of age" : "Enter age instead of year");
+    update(); if (!quiet) $("year").focus();
+  }
+  $("swap").onclick = () => setAgeMode(!ageMode);
+
+  function setType(v, keepStop) {
+    const b = $("types").querySelector('[data-v="' + v + '"]');
+    type = v; document.documentElement.dataset.type = v; [...$("types").children].forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    yearLabel();
+    $("stopLbl").textContent = type === "birthday" ? "Stop at age" : "Stop at year";
+    if (!keepStop) $("stop").value = type === "birthday" ? 100 : type === "anniversary" ? 75 : 50;
+    update();
+  }
+  $("types").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return; setType(b.dataset.v); return;
+    type = b.dataset.v; [...$("types").children].forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    yearLabel();
+    $("stopLbl").textContent = type === "birthday" ? "Stop at age" : "Stop at year";
+    $("stop").value = type === "birthday" ? 100 : 75; update();
+  });
+  $("unit").onclick = () => { $("unit").dataset.v = $("unit").dataset.v === "W" ? "D" : "W"; update(); };
+  ["name", "remind"].forEach(id => $(id).addEventListener("input", update));
+  $("stop").addEventListener("input", () => { let v = $("stop").value.replace(/\D/g, "").slice(0, 3); if (+v > 100) { v = "100"; $("stopMax").classList.add("show"); setTimeout(() => $("stopMax").classList.remove("show"), 1500); } $("stop").value = v; update(); });
+  $("stop").addEventListener("blur", () => { if (!+$("stop").value) { $("stop").value = type === "birthday" ? 100 : type === "anniversary" ? 75 : 50; update(); } });
+
+  function unitText(n, u) { return (u === "W" ? (n === 1 ? "week" : "weeks") : (n === 1 ? "day" : "days")) + " before"; }
+  function nextYear(m, d) { const t = new Date(now.getFullYear(), now.getMonth(), now.getDate()); let y = now.getFullYear(); if (new Date(y, m - 1, d) < t) y++; return y; }
+  function read() {
+    const d = +$("day").value, raw = +$("year").value;
+    const okDay = d >= 1 && d <= maxDay();
+    let y = raw;
+    if (ageMode) y = okDay && raw >= 1 ? nextYear(month, d) - raw : 0;
+    const valid = okDay && y >= 1800 && y <= now.getFullYear();
+    return { valid, m: month, d, y, name: $("name").value.trim() || "Someone", type, stop: Math.min(100, Math.max(1, +$("stop").value || 100)), remind: Math.max(0, +$("remind").value || 0), unit: $("unit").dataset.v };
+  }
+  function events(p) {
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    let yr = now.getFullYear(); if (new Date(yr, p.m - 1, p.d) < today) yr++;
+    const out = []; for (let Y = yr; Y - p.y <= p.stop; Y++) { const n = Y - p.y; if (n >= 1) out.push({ Y, n, date: new Date(Y, p.m - 1, Math.min(p.d, new Date(Y, p.m, 0).getDate())) }); }
+    return out;
+  }
+  function parts(name, t, n) { return t === "other" ? [name + ": ", n, " year"] : [poss(name) + " ", n, " " + (t === "birthday" ? "Birthday" : "Anniversary")]; }
+  const titleOf = (p, n) => parts(p.name, p.type, ord(n)).join("");
+  const short = dt => DAYS[dt.getDay()].slice(0, 3) + ", " + MONTHS[dt.getMonth()].slice(0, 3) + " " + dt.getDate() + ", " + dt.getFullYear();
+
+  function update() {
+    const r = +$("remind").value || 0; $("unit").textContent = unitText(r, $("unit").dataset.v) + " ⇄";
+    const p = read();
+    const d = +$("day").value;
+    const ev = p.valid ? events(p) : [];
+    $("monthDisp").textContent = MONTHS[month - 1].slice(0, 3);
+    $("ageHint").textContent = (!ageMode && p.valid && ev.length) ? "→ " + (p.type === "birthday" ? "turns " : "year ") + ev[0].n : "";
+    let wd = "", dayText = "", foot = null;
+    if (ev.length) { const e = ev[0]; wd = DAYS[e.date.getDay()]; dayText = String(e.date.getDate()); foot = e; }
+    else if (d >= 1 && d <= maxDay()) { let y = now.getFullYear(); if (new Date(y, month - 1, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate())) y++; wd = DAYS[new Date(y, month - 1, d).getDay()]; dayText = String(d); }
+    $("weekday").innerHTML = wd || "&nbsp;";
+    const dd = $("dayDisp");
+    if (dayText) { if (dd.textContent !== dayText || dd.classList.contains("ph")) { dd.classList.remove("flip"); void dd.offsetWidth; dd.classList.add("flip"); } dd.textContent = dayText; dd.classList.remove("ph"); }
+    else { dd.textContent = String(now.getDate()); dd.classList.add("ph"); dd.classList.remove("flip"); }
+    const f = $("foot"); f.innerHTML = "";
+    const typed = $("name").value.trim();
+    const word = p.type === "birthday" ? "Birthday" : "Anniversary";
+    const pt = parts(typed || "Name", p.type, foot ? ord(foot.n) : "#th");
+    const who = document.createElement("span"); who.className = typed ? "who" : "who ph2"; who.textContent = pt[0];
+    const num = document.createElement("span"); num.className = foot ? "num" : "num ph2"; num.textContent = pt[1];
+    const tail = document.createTextNode(pt[2]);
+    const ttl = document.createElement("div"); ttl.className = "ttl"; ttl.append(who, num, tail); f.append(ttl);
+    $("yearDisp").textContent = foot ? foot.Y : ""; 
+    $("footSub").textContent = foot ? (ev.length > 1 ? "then " + (ev.length - 1) + " more, one per year" : "just this one") : (p.valid ? "Nothing left to create" : "Fill in the date");
+    if (!ev.length) { $("count").textContent = p.valid ? "Nothing left to create" : ""; $("create").disabled = true; return; }
+    $("count").textContent = ev.length + " events";
+    if ($("create").disabled) { $("create").classList.remove("pulse"); void $("create").offsetWidth; $("create").classList.add("pulse"); }
+    $("create").disabled = false;
+  }
+
+  /* collection */
+  const ROT = [-2.2, 1.6, -1, 2.4, -1.6, 1.1];
+  function tileFor(p, i) {
+    const ev = events(p), e = ev[0];
+    const t = document.createElement("div"); t.className = "pile"; t.dataset.type = p.type; t.style.setProperty("--r", ROT[i % ROT.length] + "deg");
+    const u2 = document.createElement("div"); u2.className = "under u2"; const u1 = document.createElement("div"); u1.className = "under u1";
+    const mp = document.createElement("div"); mp.className = "mp";
+    mp.innerHTML = '<div class="mt"></div><div class="mbar"></div><div class="mdrow"><span class="mm"></span><span class="md"></span><span class="myr"></span><span class="mr"></span></div>';
+    if (e) {
+      mp.querySelector(".mm").textContent = MONTHS[e.date.getMonth()].slice(0, 3);
+      mp.querySelector(".md").textContent = e.date.getDate();
+      const mt = mp.querySelector(".mt"); const em = document.createElement("em"); em.textContent = ord(e.n);
+      const pt = parts(p.name, p.type, ord(e.n)); em.textContent = pt[1]; const inner = document.createElement("span"); inner.append(document.createTextNode(pt[0]), em, document.createTextNode(pt[2])); mt.append(inner);
+      mp.querySelector(".myr").textContent = e.Y;
+      if (p.remind) { const r = mp.querySelector(".mr"); r.innerHTML = BELL; r.append(document.createTextNode(p.remind + (p.unit === "W" ? " wk" : " d"))); }
+    }
+    const cap = document.createElement("div"); cap.className = "pilecap";
+    const lbl = document.createElement("span"); lbl.textContent = ev.length + " events · " + (p.type === "birthday" ? "born " : "since ") + p.y;
+    cap.append(lbl);
+    const ed = document.createElement("button"); ed.type = "button"; ed.className = "medit"; ed.setAttribute("aria-label", "Edit " + p.name); ed.innerHTML = PENCIL;
+    ed.onclick = () => startEdit(i);
+    mp.append(ed);
+    if (i === editing) t.classList.add("editing");
+    const stack = document.createElement("div"); stack.className = "stack"; stack.append(u2, u1, mp);
+    t.append(stack, cap); return t;
+  }
+  function renderGrid() {
+    const g = $("grid"); g.innerHTML = "";
+    if (!items.length) { const e = document.createElement("div"); e.className = "empty"; e.textContent = "Created events land here."; g.append(e); }
+    let total = 0; items.forEach((p, i) => { total += events(p).length; g.append(tileFor(p, i)); });
+    $("total").textContent = total ? total + " events" : "";
+    $("dl").hidden = !total; $("dlText").textContent = total + " events";
+  }
+
+  let editing = -1;
+  function setEditingUI() {
+    const on = editing >= 0;
+    $("editActs").hidden = !on;
+    $("createLbl").textContent = on ? "save" : "create";
+    $("create").setAttribute("aria-label", on ? "Save event" : "Create event");
+    const ic = $("create").querySelector("svg"); ic.outerHTML = on ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>`;
+  }
+  function clearForm() {
+    $("name").value = ""; $("day").value = ""; $("year").value = "";
+    if (ageMode) setAgeMode(false, true);
+    editing = -1; setEditingUI(); update();
+  }
+  function fillEdit(i) {
+    const p = items[i]; editing = i;
+    if (ageMode) setAgeMode(false, true);
+    $("name").value = p.name; setType(p.type, true);
+    month = p.m; renderMonth();
+    $("day").value = p.d; $("year").value = p.y;
+    $("remind").value = p.remind; $("unit").dataset.v = p.unit; $("stop").value = p.stop;
+    setEditingUI(); update(); renderGrid();
+    const sheet = $("sheet"); sheet.classList.remove("fresh"); void sheet.offsetWidth; sheet.classList.add("fresh");
+  }
+  function startEdit(i) {
+    const pile = $("grid").children[i], mp = pile && pile.querySelector(".mp");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const deskTop = $("desk").getBoundingClientRect().top + scrollY - 40;
+    if (reduce || !mp) { fillEdit(i); scrollTo({ top: deskTop }); $("name").focus({ preventScroll: true }); return; }
+
+    const r = mp.getBoundingClientRect(), dp = $("sheet").querySelector(".datepage").getBoundingClientRect();
+    const rot = parseFloat(pile.style.getPropertyValue("--r")) || 0;
+    const fly = document.createElement("div"); fly.className = "flyup"; fly.dataset.type = items[i].type;
+    const c = mp.cloneNode(true); c.querySelector(".medit")?.remove(); fly.append(c);
+    fly.style.cssText = "position:absolute;z-index:60;pointer-events:none;transform-origin:0 0;left:" + (r.left + scrollX) + "px;top:" + (r.top + scrollY) + "px;width:" + r.width + "px";
+    document.body.append(fly);
+    mp.style.opacity = ".25";
+
+    const s = dp.width / r.width, dx = dp.left - r.left, dy = dp.top - r.top;
+    const anim = fly.animate([
+      { transform: "translate(0,0) rotate(" + rot + "deg) scale(1)", opacity: 1, offset: 0 },
+      { transform: "translate(-4px,-14px) rotate(" + (rot - 2) + "deg) scale(1.02)", opacity: 1, offset: .15 },
+      { transform: "translate(" + (dx * .45 - 30) + "px," + (dy * .55) + "px) rotate(-6deg) scale(" + ((1 + s) / 2) + ")", opacity: 1, offset: .55 },
+      { transform: "translate(" + dx + "px," + (dy - 6) + "px) rotate(.5deg) scale(" + s + ")", opacity: 1, offset: .88 },
+      { transform: "translate(" + dx + "px," + dy + "px) rotate(0deg) scale(" + s + ")", opacity: 0, offset: 1 }
+    ], { duration: 1300, easing: "cubic-bezier(.37,0,.2,1)", fill: "forwards" });
+    scrollTo({ top: deskTop, behavior: "smooth" });
+    setTimeout(() => fillEdit(i), 1100);
+    anim.onfinish = () => { fly.remove(); $("name").focus({ preventScroll: true }); };
+  }
+  $("cancelEdit").onclick = () => { clearForm(); renderGrid(); };
+  $("deleteEdit").onclick = () => {
+    if (editing < 0) return;
+    const i = editing, pile = $("grid").children[i];
+    const done = () => { items.splice(i, 1); save(); clearForm(); renderGrid(); };
+    if (pile && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      pile.animate([{ transform: getComputedStyle(pile).transform, opacity: 1 }, { transform: "translateY(20px) rotate(8deg) scale(.9)", opacity: 0 }], { duration: 450, easing: "ease-in", fill: "forwards" }).onfinish = done;
+    } else done();
+  };
+  $("create").onclick = () => {
+    const p = read(); if (!p.valid) return;
+    const wasEditing = editing;
+    p.id = wasEditing >= 0 ? items[wasEditing].id : (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // snapshot the current sheet
+    const sheet = $("sheet"), from = sheet.getBoundingClientRect();
+    const clone = sheet.cloneNode(true); clone.removeAttribute("id");
+    clone.querySelectorAll("[id]").forEach(n => n.removeAttribute("id"));
+    const srcInputs = sheet.querySelectorAll("input"), dstInputs = clone.querySelectorAll("input");
+    srcInputs.forEach((s, k) => dstInputs[k].value = s.value);
+    const torn = document.createElement("div"); torn.className = "torn";
+    torn.style.cssText = "left:" + from.left + "px;top:" + from.top + "px;width:" + from.width + "px;height:" + from.height + "px";
+    torn.append(clone);
+
+    // commit + reset to a blank page underneath
+    if (wasEditing >= 0) items[wasEditing] = p; else items.unshift(p);
+    save(); editing = -1; setEditingUI(); renderGrid();
+    $("name").value = ""; $("day").value = ""; $("year").value = ""; if (ageMode) setAgeMode(false, true); update();
+    sheet.classList.remove("fresh"); void sheet.offsetWidth; sheet.classList.add("fresh");
+
+    const tile = $("grid").children[wasEditing >= 0 ? wasEditing : 0];
+    if (reduce || !tile) return;
+    document.body.append(torn);
+    const mp = tile.querySelector(".mp"), unders = [...tile.querySelectorAll(".under")];
+    mp.style.opacity = "0"; unders.forEach(u => u.style.opacity = "0");
+    tile.scrollIntoView({ block: "nearest", behavior: "instant" });
+    const f2 = sheet.getBoundingClientRect(); torn.style.left = f2.left + "px"; torn.style.top = f2.top + "px";
+    const dp = sheet.querySelector(".datepage").getBoundingClientRect();
+    const to = mp.getBoundingClientRect();
+    const rot = parseFloat(tile.style.getPropertyValue("--r")) || 0;
+    const s = to.width / dp.width, dx = to.left - dp.left, dy = to.top - dp.top;
+    const right = torn.querySelector(".detailpage");
+    if (right) right.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, delay: 350, easing: "ease-out", fill: "forwards" });
+    const mx = dx * .45 + 30, my = dy * .3 - 70, ms = (1 + s) / 2;
+    const anim = torn.animate([
+      { transform: "translate(0,0) rotate(0deg) scale(1)", opacity: 1, offset: 0 },
+      { transform: "translate(2px,-10px) rotate(-1deg) scale(1)", opacity: 1, offset: .12 },
+      { transform: "translate(8px,-28px) rotate(-3deg) scale(.99)", opacity: 1, offset: .28 },
+      { transform: "translate(" + mx + "px," + my + "px) rotate(5deg) scale(" + ms + ")", opacity: 1, offset: .58 },
+      { transform: "translate(" + (dx * .96) + "px," + (dy * .96) + "px) rotate(" + (rot + 1) + "deg) scale(" + (s * 1.03) + ")", opacity: 1, offset: .86 },
+      { transform: "translate(" + dx + "px," + dy + "px) rotate(" + rot + "deg) scale(" + s + ")", opacity: 0, offset: 1 }
+    ], { duration: 1700, easing: "cubic-bezier(.37,0,.2,1)", fill: "forwards" });
+    anim.onfinish = () => {
+      torn.remove();
+      mp.style.opacity = "";
+      mp.animate([{ transform: "scale(1.03)" }, { transform: "none" }], { duration: 420, easing: "cubic-bezier(.2,.8,.2,1)" });
+      unders.forEach((u, k) => { const end = getComputedStyle(u).transform; u.style.opacity = "";
+        u.animate([{ transform: "none", opacity: 0 }, { transform: end, opacity: 1 }], { duration: 650, delay: 140 * (unders.length - k), easing: "cubic-bezier(.22,.9,.24,1)", fill: "backwards" }); });
+    };
+    $("name").focus({ preventScroll: true });
+  };
+
+  /* download */
+  $("download").onclick = () => {
+    const esc = s => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,");
+    const ymd = dt => dt.getFullYear() + pad(dt.getMonth() + 1) + pad(dt.getDate());
+    const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//" + ICS_DOMAIN + "//iterator//EN"];
+    items.forEach(p => events(p).forEach(e => {
+      const end = new Date(e.date); end.setDate(end.getDate() + 1);
+      L.push("BEGIN:VEVENT", "UID:" + p.id + "-" + e.Y + "@iterator." + ICS_DOMAIN, "DTSTAMP:" + stamp, "DTSTART;VALUE=DATE:" + ymd(e.date), "DTEND;VALUE=DATE:" + ymd(end),
+        "SUMMARY:" + esc(titleOf(p, e.n)), "TRANSP:TRANSPARENT");
+      if (p.remind) L.push("BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + esc(titleOf(p, e.n)), "TRIGGER:-P" + p.remind + p.unit, "END:VALARM");
+      L.push("END:VEVENT");
+    }));
+    L.push("END:VCALENDAR");
+    const url = URL.createObjectURL(new Blob([L.join("\r\n") + "\r\n"], { type: "text/calendar" }));
+    const a = document.createElement("a"); a.href = url; a.download = "iterator.ics"; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  items.forEach(p => { if (!p.id) p.id = String(Math.random()).slice(2); });
+  update(); renderGrid();
+})();
+</script>
+</body>
+</html>

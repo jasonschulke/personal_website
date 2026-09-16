@@ -1,6 +1,7 @@
 // Single source of truth for project dates (display strings).
 // Used by the Work page cards and each project detail page.
 export const projectDates: Record<string, string> = {
+  iterator: 'September 2026',
   'queens-quest': 'September 2026',
   tender: 'August 2026',
   parsnip: 'July 2026',
