@@ -154,6 +154,10 @@ export default function Max() {
                   description="Liquid Glass, Clear Glass, or blur, with a flat or fading tint that colors the bar, plus opacity and corner radius."
                 />
                 <FeatureRow
+                  feature="Window Corners"
+                  description="Sets the corner radius of every app's windows, down to square, and relaunches open apps to apply it."
+                />
+                <FeatureRow
                   feature="Multi-Display"
                   description="The bar follows the Dock to whichever display it's on, without spilling onto the one next to it."
                 />
@@ -203,15 +207,23 @@ export default function Max() {
             own description of where each icon is.
           </p>
           <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
-            I also looked at squaring off the rounded corners of every window,
-            since the little wedges of wallpaper between tiled windows bother
-            me. macOS has no setting for it; each app draws its own corners, so
-            a real fix means disabling System Integrity Protection and injecting
-            code into every app. A prototype that painted over the corners with
-            a flat color looked rough against both light and dark windows, so it
-            didn&apos;t ship. Turning off &ldquo;Tiled windows have
-            margins&rdquo; in Desktop &amp; Dock settings closes most of the gap
-            on its own.
+            I also wanted square window corners, since the little wedges of
+            wallpaper between tiled windows bother me. macOS has no setting for
+            it, and each app draws its own corners, so at first it looked like
+            the only real fix meant disabling System Integrity Protection and
+            injecting code into every app. A prototype that painted over the
+            corners with a flat color looked rough against both light and dark
+            windows, so I dropped it.
+          </p>
+          <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+            Then a search turned up an AI-generated answer pointing at a hidden
+            AppKit preference, <code>NSConvolutionOverride1</code>. It
+            looked made up, but the name turned out to be in macOS, right next
+            to the code that sets a window&apos;s corner radius. Testing it
+            showed AppKit reads it as the radius for every window: any positive
+            value works, zero is ignored, and 0.01 is square. Apps pick it up
+            when they relaunch, with no System Integrity Protection changes or
+            code injection. Max now has a setting for it.
           </p>
         </section>
 
@@ -297,6 +309,10 @@ export default function Max() {
               <li className="flex justify-between gap-4">
                 <span className="font-medium text-zinc-900 dark:text-zinc-100">Tiled windows have margins:</span>
                 <span>Off</span>
+              </li>
+              <li className="flex justify-between gap-4">
+                <span className="font-medium text-zinc-900 dark:text-zinc-100">Window corners:</span>
+                <span>Square</span>
               </li>
             </ul>
           </div>
