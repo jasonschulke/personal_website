@@ -99,7 +99,7 @@ const projects: Project[] = [
     name: 'Max',
     slug: 'max',
     description:
-      'A lightweight macOS menu bar app that gives you full control over your Dock appearance with customizable visual effects, colors, and materials.',
+      "A macOS menu bar app that turns the Dock into a full-width bar, like the Windows taskbar, by drawing over Apple's Dock.",
     href: '/projects/max',
     image: maxHero,
   },
