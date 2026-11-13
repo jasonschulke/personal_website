@@ -9,7 +9,7 @@ import heroImage from './max_hero.jpg'
 import iconImage from './max_icon.png'
 import dockSettingsImage from './max_settings_dock.png'
 import appearanceSettingsImage from './max_settings_appearance.png'
-import dockItemsImage from './max_settings_items.png'
+import profilesSettingsImage from './max_settings_profiles.png'
 import windowsSettingsImage from './max_settings_windows.png'
 
 export const metadata: Metadata = {
@@ -108,12 +108,10 @@ export default function Max() {
             comes back when you let go.
           </p>
           <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
-            Since the bar covers the Dock, Max also has an editor for the
-            Dock&apos;s items. You can drag apps into a new order, add apps,
-            folders, and spacers, and remove what you don&apos;t want. Applying
-            writes the changes to the Dock&apos;s own preferences and restarts
-            it, and the first edit saves a backup of your original Dock that you
-            can restore.
+            So rearranging happens right in the Dock: drag icons to reorder them,
+            off the Dock to remove them, or onto it to add them. What the Dock
+            can&apos;t do, Max adds: saving arrangements as profiles, adding
+            spacers, and restoring your original Dock from a backup.
           </p>
         </section>
 
@@ -122,7 +120,9 @@ export default function Max() {
             Settings
           </h2>
           <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
-            Settings has a tab for each part of Max. The Dock tab sizes things
+            Settings is a 4:3 window with a dock of its own along the bottom: a
+            tile for each section, in the icon&apos;s lavenders, with a dot under
+            the open one. The Dock section sizes things
             three ways: <em>Dock size</em> resizes Apple&apos;s Dock itself, so
             windows still stop above it; <em>Icon size</em> scales the icons Max
             draws without changing their spacing; and <em>Extra height</em> makes
@@ -134,34 +134,38 @@ export default function Max() {
           </p>
           <Screenshot
             src={dockSettingsImage}
-            alt="The Dock tab: drawing over the Dock, Dock size, icon size, extra height, icon details, and display"
-            caption="The Dock tab."
-            size="medium"
+            alt="The Dock section of Max's Settings, with the section dock along the bottom of the window"
+            caption="The Dock section, and the dock that switches between sections."
           />
+
+          <p className="mt-8 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+            A bar that never moves can leave a faint ghost on an LCD, which I
+            started to see on my own monitor. So the Dock section also has Screen
+            Care: Max shifts its icons by a pixel every few minutes, too little
+            to notice, and can dim the bar while you&apos;re away.
+          </p>
 
           <p className="mt-8 text-base leading-7 text-zinc-600 dark:text-zinc-400">
             Appearance picks the bar&apos;s material (Liquid Glass, Clear Glass,
             Blur, or Solid), its color, and its corners, with a small live
-            preview at the top.
+            preview at the top. Settings itself follows the app icon, in light or
+            dark.
           </p>
           <Screenshot
             src={appearanceSettingsImage}
-            alt="The Appearance tab with a preview of the bar and the material options"
-            caption="Appearance, with a preview of the bar."
-            size="medium"
+            alt="The Appearance section in dark mode, with a preview of the bar and the material options"
+            caption="Appearance, in dark mode."
           />
 
           <p className="mt-8 text-base leading-7 text-zinc-600 dark:text-zinc-400">
-            Dock Items is the editor: a miniature of the whole Dock on top, the
-            items below to drag into place, and Save to apply. Arrangements can
-            be saved as profiles, like one for work and one for home, and
-            switched from here or from the menu bar.
+            Profiles saves the Dock&apos;s arrangement under a name, like one for
+            work and one for home, to switch between here or from the menu bar.
+            It also adds spacers and restores the original Dock.
           </p>
           <Screenshot
-            src={dockItemsImage}
-            alt="The Dock Items tab with a miniature of the Dock above the list of apps and spacers"
-            caption="Dock Items: the miniature on top, the list to rearrange below."
-            size="medium"
+            src={profilesSettingsImage}
+            alt="The Profiles section in dark mode, with two saved profiles, spacer buttons, and the backup"
+            caption="Profiles, in dark mode."
           />
 
           <p className="mt-8 text-base leading-7 text-zinc-600 dark:text-zinc-400">
@@ -170,9 +174,8 @@ export default function Max() {
           </p>
           <Screenshot
             src={windowsSettingsImage}
-            alt="The Windows tab with square window corners and two per-app exceptions"
+            alt="The Windows section with square window corners and two per-app exceptions"
             caption="Window corners, with per-app exceptions."
-            size="medium"
           />
         </section>
 
@@ -214,8 +217,12 @@ export default function Max() {
                   description="Resize the Dock itself, scale the icons Max draws, or make the bar taller with the icons kept centered."
                 />
                 <FeatureRow
-                  feature="Dock Editor"
-                  description="Reorder, add, and remove apps, folders, and spacers, save arrangements as profiles, and keep a backup of your original Dock."
+                  feature="Dock Profiles"
+                  description="Save the Dock's arrangement and switch between profiles from Settings or the menu bar, add spacers, and restore the original Dock."
+                />
+                <FeatureRow
+                  feature="Screen Care"
+                  description="Shifts the icons by a pixel every few minutes and can dim the bar when you're idle, so a bar that never moves doesn't leave a ghost."
                 />
                 <FeatureRow
                   feature="Appearance"
@@ -347,9 +354,9 @@ export default function Max() {
             <li className="flex gap-3">
               <span className="text-indigo-500">•</span>
               <span>
-                The Dock editor rewrites <code>persistent-apps</code> and{' '}
+                Profiles are saved copies of <code>persistent-apps</code> and{' '}
                 <code>persistent-others</code> in <code>com.apple.dock</code>,
-                keeping the Dock&apos;s own entries intact
+                written back with the Dock&apos;s own entries intact
               </span>
             </li>
             <li className="flex gap-3">
