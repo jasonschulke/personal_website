@@ -6,7 +6,11 @@ import { ProjectDate } from '@/components/ProjectDate'
 import { FeatureRow, Screenshot, TechStack } from '@/components/ProjectParts'
 
 import heroImage from './max_hero.jpg'
-import settingsImage from './max_settings.png'
+import iconImage from './max_icon.png'
+import dockSettingsImage from './max_settings_dock.png'
+import appearanceSettingsImage from './max_settings_appearance.png'
+import dockItemsImage from './max_settings_items.png'
+import windowsSettingsImage from './max_settings_windows.png'
 
 export const metadata: Metadata = {
   title: 'Max - A Full-Width Dock for macOS',
@@ -18,14 +22,17 @@ export default function Max() {
   return (
     <Container className="mt-9 sm:mt-16">
       <header className="max-w-2xl">
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
+        <Image src={iconImage} alt="Max's app icon" className="h-20 w-20" priority />
+        <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
           Max
         </h1>
         <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
           A macOS menu bar app that turns the Dock into one bar across the full
           width of the screen, like the Windows taskbar. It covers Apple&apos;s
           floating Dock and redraws its icons edge to edge, while the real Dock
-          keeps doing all the work underneath.
+          keeps doing all the work underneath. Its settings cover the
+          Dock&apos;s size and look, which display it stays on, how it&apos;s
+          arranged, and even the corners of every window.
         </p>
         <p className="mt-4 text-base">
           <Link
@@ -108,10 +115,63 @@ export default function Max() {
             it, and the first edit saves a backup of your original Dock that you
             can restore.
           </p>
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+            Settings
+          </h2>
+          <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+            Settings has a tab for each part of Max. The Dock tab sizes things
+            three ways: <em>Dock size</em> resizes Apple&apos;s Dock itself, so
+            windows still stop above it; <em>Icon size</em> scales the icons Max
+            draws without changing their spacing; and <em>Extra height</em> makes
+            the bar taller than the Dock while keeping the icons centered. It also
+            brings back details a cover would otherwise hide: icons hop while
+            their app launches, Calendar shows today&apos;s date, and the Trash
+            looks full when it is. Running dots and badges can each be switched
+            off, and the Dock can be kept on one display.
+          </p>
           <Screenshot
-            src={settingsImage}
-            alt="Max's settings with Draw over the Dock turned on and the Dock items editor button"
-            caption="Draw over the Dock, the Dock item editor, and the bar's material."
+            src={dockSettingsImage}
+            alt="The Dock tab: drawing over the Dock, Dock size, icon size, extra height, icon details, and display"
+            caption="The Dock tab."
+            size="medium"
+          />
+
+          <p className="mt-8 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+            Appearance picks the bar&apos;s material (Liquid Glass, Clear Glass,
+            Blur, or Solid), its color, and its corners, with a small live
+            preview at the top.
+          </p>
+          <Screenshot
+            src={appearanceSettingsImage}
+            alt="The Appearance tab with a preview of the bar and the material options"
+            caption="Appearance, with a preview of the bar."
+            size="medium"
+          />
+
+          <p className="mt-8 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+            Dock Items is the editor: a miniature of the whole Dock on top, the
+            items below to drag into place, and Save to apply. Arrangements can
+            be saved as profiles, like one for work and one for home, and
+            switched from here or from the menu bar.
+          </p>
+          <Screenshot
+            src={dockItemsImage}
+            alt="The Dock Items tab with a miniature of the Dock above the list of apps and spacers"
+            caption="Dock Items: the miniature on top, the list to rearrange below."
+            size="medium"
+          />
+
+          <p className="mt-8 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+            Windows sets the corner radius of every app&apos;s windows, down to
+            square, with exceptions for apps that should keep their own.
+          </p>
+          <Screenshot
+            src={windowsSettingsImage}
+            alt="The Windows tab with square window corners and two per-app exceptions"
+            caption="Window corners, with per-app exceptions."
             size="medium"
           />
         </section>
@@ -146,20 +206,28 @@ export default function Max() {
                   description="Updates when apps launch or quit, items move, the Dock's settings change, or the Dock restarts."
                 />
                 <FeatureRow
+                  feature="Live Details"
+                  description="Launch bounces, today's date on Calendar, and a full Trash, plus running dots and badges that can each be turned off."
+                />
+                <FeatureRow
+                  feature="Size"
+                  description="Resize the Dock itself, scale the icons Max draws, or make the bar taller with the icons kept centered."
+                />
+                <FeatureRow
                   feature="Dock Editor"
-                  description="Reorder, add, and remove apps, folders, and spacers, with a backup of your original Dock."
+                  description="Reorder, add, and remove apps, folders, and spacers, save arrangements as profiles, and keep a backup of your original Dock."
                 />
                 <FeatureRow
                   feature="Appearance"
-                  description="Liquid Glass, Clear Glass, or blur, with a flat or fading tint that colors the bar, plus opacity and corner radius."
+                  description="Liquid Glass, Clear Glass, Blur, or Solid, with a flat or fading color, opacity, and corner radius, and a live preview."
                 />
                 <FeatureRow
                   feature="Window Corners"
-                  description="Sets the corner radius of every app's windows, down to square, and relaunches open apps to apply it."
+                  description="Sets the corner radius of every app's windows, down to square, with per-app exceptions, and relaunches open apps to apply it."
                 />
                 <FeatureRow
                   feature="Multi-Display"
-                  description="The bar follows the Dock to whichever display it's on, without spilling onto the one next to it."
+                  description="The bar follows the Dock between displays, and the Dock can be kept on one of them."
                 />
                 <FeatureRow
                   feature="Auto-Hide"
@@ -223,7 +291,16 @@ export default function Max() {
             showed AppKit reads it as the radius for every window: any positive
             value works, zero is ignored, and 0.01 is square. Apps pick it up
             when they relaunch, with no System Integrity Protection changes or
-            code injection. Max now has a setting for it.
+            code injection. Max now has a setting for it, with exceptions for
+            apps that should keep their rounded corners.
+          </p>
+          <p className="mt-4 text-base leading-7 text-zinc-600 dark:text-zinc-400">
+            Covering the Dock also covered what makes it feel alive, so the
+            latest round brought that back: the launch bounce, Calendar&apos;s
+            date, and the full Trash. The app got a new icon too, picked from
+            thirty drawn variations: a dark desktop with two square-cornered
+            windows tiled flush above a full-width bar, its app tiles in the
+            desktop&apos;s own violets.
           </p>
         </section>
 
@@ -262,6 +339,14 @@ export default function Max() {
             <li className="flex gap-3">
               <span className="text-indigo-500">•</span>
               <span>
+                Keeping the Dock on one display uses an event tap that stops the
+                pointer just short of the other displays&apos; Dock edges, where
+                pushing would move the Dock
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="text-indigo-500">•</span>
+              <span>
                 The Dock editor rewrites <code>persistent-apps</code> and{' '}
                 <code>persistent-others</code> in <code>com.apple.dock</code>,
                 keeping the Dock&apos;s own entries intact
@@ -284,7 +369,7 @@ export default function Max() {
           </h2>
           <TechStack
             color="indigo"
-            items={['Swift 6', 'AppKit', 'SwiftUI', 'Observation', 'Accessibility API', 'Liquid Glass', 'ServiceManagement']}
+            items={['Swift 6', 'AppKit', 'SwiftUI', 'Observation', 'Accessibility API', 'Core Graphics event taps', 'Liquid Glass', 'ServiceManagement']}
           />
         </section>
 
@@ -297,6 +382,10 @@ export default function Max() {
               <li className="flex justify-between gap-4">
                 <span className="font-medium text-zinc-900 dark:text-zinc-100">Draw over the Dock:</span>
                 <span>On</span>
+              </li>
+              <li className="flex justify-between gap-4">
+                <span className="font-medium text-zinc-900 dark:text-zinc-100">Keep the Dock on:</span>
+                <span>Your main display</span>
               </li>
               <li className="flex justify-between gap-4">
                 <span className="font-medium text-zinc-900 dark:text-zinc-100">Dock auto-hide:</span>
@@ -318,9 +407,9 @@ export default function Max() {
           </div>
           <p className="mt-4 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
             Max needs macOS 26 or later, and Accessibility access to draw over
-            the Dock. Without it, the bar sits behind the Dock instead. Live Dock
-            tiles, like Calendar&apos;s date or minimized-window thumbnails, stay
-            hidden under the bar.
+            the Dock. Without it, the bar sits behind the Dock instead. The full
+            Trash icon also needs Full Disk Access. Minimized-window thumbnails
+            and apps&apos; own live Dock tiles stay hidden under the bar.
           </p>
         </section>
 
