@@ -78,8 +78,8 @@ const projects: Project[] = [
     tag: 'Apps',
     description:
       'A gamified RPG task planner. Real-life tasks become quests in a cozy top-down fantasy kingdom, with sub-tasks as chapters and rewards for finishing.',
+    href: '/projects/queens-quest',
     image: qqTeaser,
-    badge: { label: 'Soon', variant: 'soon' },
   },
   {
     name: 'iterator...',
