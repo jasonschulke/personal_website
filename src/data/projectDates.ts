@@ -4,7 +4,7 @@ export const projectDates: Record<string, string> = {
   'return-window': 'March 2027',
   tender: 'February 2027',
   parsnip: 'January 2027',
-  'queens-quest': 'December 2026',
+  'queens-quest': 'November 2026',
   'kids-art-frame': 'November 2026',
   max: 'November 2026',
   'presto-panel': 'October 2026',
