@@ -20,6 +20,8 @@ import parsnipTeaser from './parsnip/parsnip_mock.png'
 import tenderTeaser from './tender/tender_teaser.png'
 import qqTeaser from './qq/qq_teaser.png'
 import iteratorHero from './iterator/iterator_hero.png'
+import adMuteHero from './ad-mute/ad_mute_hero.png'
+import kidsArtFrameHero from './kids-art-frame/kids_art_frame_cover.jpg'
 
 export const metadata: Metadata = {
   title: 'Projects',
@@ -107,6 +109,24 @@ const projects: Project[] = [
       'A unified house hunting tool that lets you save, rate, and organize homes from any listing site with just one click.',
     href: '/projects/papaya',
     image: papayaHero,
+  },
+  {
+    name: "Kids' Art Frame",
+    slug: 'kids-art-frame',
+    tag: 'Hardware',
+    description:
+      "A color e-paper frame for my kids' art. A phone photo is straightened, filed, captioned, and on the wall within minutes.",
+    href: '/projects/kids-art-frame',
+    image: kidsArtFrameHero,
+  },
+  {
+    name: 'Ad Mute',
+    slug: 'ad-mute',
+    tag: 'Tools',
+    description:
+      'A Home Assistant automation that mutes the TV during Disney+ ads by watching how the playback position behaves.',
+    href: '/projects/ad-mute',
+    image: adMuteHero,
   },
   {
     name: 'Max',

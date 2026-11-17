@@ -5,6 +5,8 @@ export const projectDates: Record<string, string> = {
   tender: 'February 2027',
   parsnip: 'January 2027',
   'queens-quest': 'December 2026',
+  'kids-art-frame': 'November 2026',
+  'ad-mute': 'November 2026',
   max: 'November 2026',
   iterator: 'September 2026',
   hootenanny: 'May 2026',
