@@ -49,10 +49,7 @@ export function ProjectFilter({
       </div>
 
       {filter !== WRITING && (
-        <section className="mt-10">
-          <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
-            Projects
-          </h2>
+        <section className="mt-2">
           {visibleUpcoming.length > 0 && (
             <div className="mt-8 grid gap-4 lg:grid-cols-2">
               {visibleUpcoming.map((item) => (
