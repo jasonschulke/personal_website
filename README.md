@@ -5,7 +5,7 @@ Source code for [jasonschulke.com](https://jasonschulke.com), the personal websi
 ## On the site
 
 - **[Experience](https://jasonschulke.com/experience):** support operations, customer education, and solutions architecture at Airtable, Common Room, and [Prep Work](https://prepwork.co).
-- **[Work](https://jasonschulke.com/projects):** side projects and small web tools, including [iterator...](https://jasonschulke.com/projects/iterator), [Hootenanny](https://jasonschulke.com/projects/hootenanny), [Buckets](https://jasonschulke.com/projects/buckets), and a [Zapier vs. Make pricing calculator](https://jasonschulke.com/projects/zapier-or-make).
+- **[Projects](https://jasonschulke.com/projects):** side projects and small web tools, including [iterator...](https://jasonschulke.com/projects/iterator), [Hootenanny](https://jasonschulke.com/projects/hootenanny), [Buckets](https://jasonschulke.com/projects/buckets), and a [Zapier vs. Make pricing calculator](https://jasonschulke.com/projects/zapier-or-make).
 - **[Writing](https://jasonschulke.com/projects#writing):** essays on product education and operations from my Substack, [Product Education](https://producteducation.substack.com).
 
 ## Built with

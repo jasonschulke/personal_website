@@ -21,7 +21,7 @@ export default function ArticlesRedirect() {
           href="/projects#writing"
           className="font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
-          Work
+          Projects
         </Link>{' '}
         page. Redirecting you there now.
       </p>
