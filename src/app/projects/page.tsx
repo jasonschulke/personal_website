@@ -22,6 +22,9 @@ import qqTeaser from './qq/qq_teaser.png'
 import iteratorHero from './iterator/iterator_hero.png'
 import adMuteHero from './ad-mute/ad_mute_hero.png'
 import kidsArtFrameHero from './kids-art-frame/kids_art_frame_cover.jpg'
+import homeLabHero from './home-lab/home_lab_dashboard.jpg'
+import prestoHero from './presto-panel/presto_cover.png'
+import deskKnobHero from './desk-knob/desk_knob_cover.jpg'
 
 export const metadata: Metadata = {
   title: 'Projects',
@@ -84,6 +87,24 @@ const projects: Project[] = [
     image: qqTeaser,
   },
   {
+    name: 'Presto Panel',
+    slug: 'presto-panel',
+    tag: 'Hardware',
+    description:
+      'A touchscreen Sonos controller for my turntable, built on a Pimoroni Presto and drawn entirely in dots.',
+    href: '/projects/presto-panel',
+    image: prestoHero,
+  },
+  {
+    name: 'Desk Knob',
+    slug: 'desk-knob',
+    tag: 'Hardware',
+    description:
+      "An ESP32 rotary knob on my desk that controls my Mac's volume, mic, and media through Home Assistant.",
+    href: '/projects/desk-knob',
+    image: deskKnobHero,
+  },
+  {
     name: 'iterator...',
     slug: 'iterator',
     tag: 'Tools',
@@ -109,6 +130,15 @@ const projects: Project[] = [
       'A unified house hunting tool that lets you save, rate, and organize homes from any listing site with just one click.',
     href: '/projects/papaya',
     image: papayaHero,
+  },
+  {
+    name: 'Home Lab Dashboard',
+    slug: 'home-lab',
+    tag: 'Tools',
+    description:
+      'A custom dashboard for my home server: a health score, what needs attention, every service and device, and a map of the network.',
+    href: '/projects/home-lab',
+    image: homeLabHero,
   },
   {
     name: "Kids' Art Frame",
